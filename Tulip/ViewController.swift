@@ -92,11 +92,11 @@ class ViewController: UIViewController {
         dropDownTableView.dataSource = self
         
         contentTableView.separatorStyle = .none
-        
-        //posts.append(global.firstPost!)
-        //posts.append(global.secondPost!)
-        
         contentTableView.allowsSelection = false
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(contentTableViewRefreshAction), for: .valueChanged)
+        contentTableView.refreshControl = refreshControl
         
         let clickedBackgroundGesture = UITapGestureRecognizer(target: self, action: #selector(clickedBackgroundAction))
         grayBackgroundView.addGestureRecognizer(clickedBackgroundGesture)
@@ -111,6 +111,11 @@ class ViewController: UIViewController {
     @objc func clickedBackgroundAction() {
         dropDownTableView.isHidden = true
         grayBackgroundView.alpha = 0
+    }
+    
+    //Action
+    @objc func contentTableViewRefreshAction() {
+        global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
     }
 
 
@@ -251,6 +256,7 @@ extension ViewController: StreamDelegate {
         }
         self.posts = posts
         contentTableView.reloadData()
+        contentTableView.refreshControl?.endRefreshing()
     }
     
     func handleGetMyPostsResponse(dictionary:[String: Any]) {

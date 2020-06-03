@@ -21,7 +21,7 @@ class CreatePostViewController: UIViewController {
     
     @IBOutlet weak var grayBackgroundView: UIView!
     
-    let dropDownRowHeight:CGFloat = 46.0
+    let dropDownRowHeight:CGFloat = 46.5 
     
     var currentlyCheckedIndex = -1
 

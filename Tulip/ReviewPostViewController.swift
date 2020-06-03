@@ -30,6 +30,7 @@ class ReviewPostViewController: UIViewController {
         contentTableView.dataSource = self
         contentTableView.delegate = self
         contentTableView.allowsSelection = false
+        contentTableView.separatorStyle = .none
         
         let reviewAndPostGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(reviewAndPostLabelAction))
         postLabel.addGestureRecognizer(reviewAndPostGestureRecognizer)

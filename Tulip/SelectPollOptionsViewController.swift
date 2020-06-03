@@ -99,6 +99,14 @@ class SelectPollOptionsViewController: UIViewController {
         
         pollOptionsTableView.separatorStyle = .none
         
+        currentlyCheckedYourAgeIndex = UserDefaults.standard.integer(forKey: "storedAgeIndex") // zero if nothing stored
+        currentlyCheckedYourGenderIndex = UserDefaults.standard.integer(forKey: "storedGenderIndex") // zero if nothing stored
+        
+        let ageTitle = currentlyCheckedYourAgeIndex == 0 ? "Your Age ▼": global.yourAgeOptions[currentlyCheckedYourAgeIndex] + " ▼"
+        yourAgeButtonOutlet.setTitle(ageTitle, for: .normal)
+        let genderTitle = currentlyCheckedYourGenderIndex == 0 ? "Your Gender ▼": global.yourGenderOptions[currentlyCheckedYourGenderIndex] + " ▼"
+        yourGenderButtonOutlet.setTitle(genderTitle, for: .normal)
+        
         // set height of table view
         let pollOptionsTableViewHeight = pollOptionsTableViewRowHeight * CGFloat(global.categoryToOptions[postCategory]!.count)
         if (pollOptionsTableViewHeight > maxPollOptionsTableViewHeight) {
@@ -111,6 +119,7 @@ class SelectPollOptionsViewController: UIViewController {
         } else {
             tableViewHeightConstraint.constant = pollOptionsTableViewHeight
         }
+        // height setting complete
         
         let reviewAndPostGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(reviewAndPostLabelAction))
         reviewAndPostLabel.addGestureRecognizer(reviewAndPostGestureRecognizer)
@@ -185,6 +194,7 @@ extension SelectPollOptionsViewController: UITableViewDelegate, UITableViewDataS
         if (tableView == dropDownTableView) {
             if (currentDropDown == "yourAge") {
                 currentlyCheckedYourAgeIndex = indexPath.row
+                UserDefaults.standard.set(currentlyCheckedYourAgeIndex, forKey: "storedAgeIndex")
                 UIView.performWithoutAnimation {
                     let ageTitle = currentlyCheckedYourAgeIndex == 0 ? "Your Age ▼": global.yourAgeOptions[currentlyCheckedYourAgeIndex] + " ▼"
                     yourAgeButtonOutlet.setTitle(ageTitle, for: .normal)
@@ -193,6 +203,7 @@ extension SelectPollOptionsViewController: UITableViewDelegate, UITableViewDataS
                 }
             } else if (currentDropDown == "yourGender") {
                 currentlyCheckedYourGenderIndex = indexPath.row
+                UserDefaults.standard.set(currentlyCheckedYourGenderIndex, forKey: "storedGenderIndex")
                 UIView.performWithoutAnimation {
                     let genderTitle = currentlyCheckedYourGenderIndex == 0 ? "Your Gender ▼": global.yourGenderOptions[currentlyCheckedYourGenderIndex] + " ▼"
                     yourGenderButtonOutlet.setTitle(genderTitle, for: .normal)

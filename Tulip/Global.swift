@@ -13,9 +13,6 @@ class Global {
     
     var username:String = ""
     
-    var firstPost:Poast? = nil
-    var secondPost:Poast? = nil
-    
     let pollOptionTrackTintColor:UIColor = UIColor.init(red: 228/255, green: 228/255, blue: 230/255, alpha: 1)
     let pollOptionColorDefault = UIColor.init(red: 15/255, green: 203/255, blue: 255/255, alpha: 1)
     let pollOptionColorMostVotes = UIColor.init(red: 15/255, green: 203/255, blue: 255/255, alpha: 1)
