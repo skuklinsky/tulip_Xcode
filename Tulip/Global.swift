@@ -101,11 +101,7 @@ class Global {
             }
         }
         
-<<<<<<< HEAD
-        if let theJSONData = try? JSONSerialization.data(withJSONObject: dictionaryMessageQuotesFixed, options: []) {
-=======
         if let theJSONData = try? JSONSerialization.data(withJSONObject: messageWithNormalizedQuotes, options: []) {
->>>>>>> 43ed3f450af85999bb2ae3dac598e28bb97ea3e1
             if let theJSONText = String(data: theJSONData, encoding: .utf8) {
                 
                 let msgLengthAsInt:Int32 = Int32(theJSONText.count)
@@ -120,7 +116,7 @@ class Global {
                         return
                     }
                     outputStream.write(pointer, maxLength: data.count)
-                    print("Message sent with instruction: " + (dictionaryMessageQuotesFixed["instruction"]! as! String))
+                    print("Message sent with instruction: " + (messageWithNormalizedQuotes["instruction"]! as! String))
                 }
             }
         }
