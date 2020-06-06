@@ -11,7 +11,7 @@ import UIKit
 
 class Global {
     
-    var username:String = ""
+    var username:String? = UserDefaults.standard.string(forKey: "username")
     
     let pollOptionTrackTintColor:UIColor = UIColor.init(red: 228/255, green: 228/255, blue: 230/255, alpha: 1)
     let pollOptionColorDefault = UIColor.init(red: 15/255, green: 203/255, blue: 255/255, alpha: 1)
@@ -82,6 +82,12 @@ class Global {
                 newVotingOptions.append(replaceOccurencesOfQuotesBeforeSending(string: votingOptions[index]))
             }
             messageWithNormalizedQuotes["votingOptions"] = getJsonFromStringList(stringList: newVotingOptions)
+        }
+        if let username = dictionaryMessage["username"] as! String? {
+            messageWithNormalizedQuotes["username"] = replaceOccurencesOfQuotesBeforeSending(string: username)
+        }
+        if let password = dictionaryMessage["password"] as! String? {
+            messageWithNormalizedQuotes["password"] = replaceOccurencesOfQuotesBeforeSending(string: password)
         }
         // finish replacing
         
