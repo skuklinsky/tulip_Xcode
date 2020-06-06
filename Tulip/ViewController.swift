@@ -37,14 +37,23 @@ class ViewController: UIViewController {
     }
     
     @IBAction func profileAction(_ sender: Any) {
-        global.sendMessage(dictionaryMessage: ["instruction": "getMyPosts", "username": global.username], vc: self)
+        if let _ = global.username {
+            global.sendMessage(dictionaryMessage: ["instruction": "getMyPosts", "username": global.username!], vc: self)
+        } else {
+            loginOrSignup()
+        }
     }
     
     
     @IBAction func createPostAction(_ sender: Any) {
-        let newScreen = self.storyboard?.instantiateViewController(withIdentifier: "CreatePostViewController") as! CreatePostViewController
-        newScreen.modalPresentationStyle = .fullScreen
-        self.present(newScreen, animated: true, completion: nil)
+        
+        if let _ = global.username {
+            let newScreen = self.storyboard?.instantiateViewController(withIdentifier: "CreatePostViewController") as! CreatePostViewController
+            newScreen.modalPresentationStyle = .fullScreen
+            self.present(newScreen, animated: true, completion: nil)
+        } else {
+            loginOrSignup()
+        }
     }
     
     @IBAction func sortByClicked(_ sender: Any) {
@@ -84,7 +93,7 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         global.setupNetworkCommunication(vc: self)
-        global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
+        contentTableViewRefreshAction()
         
         contentTableView.delegate = self
         contentTableView.dataSource = self
@@ -116,6 +125,64 @@ class ViewController: UIViewController {
     //Action
     @objc func contentTableViewRefreshAction() {
         global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
+    }
+    
+    func loginOrSignup() {
+        let alertController = UIAlertController(title: "To make a post or view your profile, you must be logged in.", message: "This allows you to easily access your post history", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Log in", style: .default, handler: showLoginAlert))
+        alertController.addAction(UIAlertAction(title: "Sign up", style: .default, handler: showSignupAlert))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func showLoginAlert(alert: UIAlertAction!) {
+        let alertController = UIAlertController(title: "Enter your username and password", message: "", preferredStyle: .alert)
+        
+        alertController.addTextField(configurationHandler: {(textField: UITextField) in
+            textField.placeholder = "username"
+            textField.addTarget(self, action: #selector(self.textChanged), for: .editingChanged)
+        })
+        alertController.addTextField(configurationHandler: {(textField: UITextField) in
+            textField.placeholder = "password"
+            textField.addTarget(self, action: #selector(self.textChanged), for: .editingChanged)
+        })
+        
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Log in", style: .default, handler: {(alert: UIAlertAction!) in self.sendLoginRequestToServer(alert: alert, username: alertController.textFields![0].text!, password: alertController.textFields![1].text!)}))
+        
+        alertController.actions[1].isEnabled = false
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func showSignupAlert(alert: UIAlertAction) {
+        let alertController = UIAlertController(title: "Create a username and password", message: "Your username will not be visible when you post", preferredStyle: .alert)
+        
+        alertController.addTextField(configurationHandler: {(textField: UITextField) in
+            textField.placeholder = "username"
+            textField.addTarget(self, action: #selector(self.textChanged), for: .editingChanged)
+        })
+        alertController.addTextField(configurationHandler: {(textField: UITextField) in
+            textField.placeholder = "password"
+            textField.addTarget(self, action: #selector(self.textChanged), for: .editingChanged)
+        })
+        
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Sign up", style: .default, handler: {(alert: UIAlertAction!) in self.sendSignupRequestToServer(alert: alert, username: alertController.textFields![0].text!, password: alertController.textFields![1].text!)}))
+        
+        alertController.actions[1].isEnabled = false
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func sendLoginRequestToServer(alert: UIAlertAction, username:String, password:String) {
+        let dictionaryToSend:[String: Any] = ["instruction": "loginRequest", "username": username, "password": password]
+        global.sendMessage(dictionaryMessage: dictionaryToSend, vc: self)
+    }
+    
+    func sendSignupRequestToServer(alert: UIAlertAction, username:String, password:String) {
+        let dictionaryToSend:[String: Any] = ["instruction": "signupRequest", "username": username, "password": password]
+        global.sendMessage(dictionaryMessage: dictionaryToSend, vc: self)
     }
 
 
@@ -180,7 +247,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             }
             
             if (sortByCurrentlyCheckedIndex != oldSortByIndex || categoriesCurrentlyCheckedIndex != oldCategoriesIndex) {
-                global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
+                contentTableViewRefreshAction()
             }
             
             let futureTime = DispatchTime.now() + global.dropDownTableViewDisappearDelay
@@ -211,10 +278,17 @@ extension ViewController: StreamDelegate {
             switch (instruction) {
             case "connectionEstablished":
                 global.stableConnectionExists = true
+                contentTableView.refreshControl?.endRefreshing()
             case "getMainFeedPostsResponse":
                 handleGetMainFeedPostsResponse(dictionary: dictionary)
             case "getMyPostsResponse":
                 handleGetMyPostsResponse(dictionary: dictionary)
+            case "successfullyVoted":
+                handleSuccessfullyVoted(dictionary: dictionary)
+            case "loginRequestResponse":
+                handleLoginRequestResponse(dictionary: dictionary)
+            case "signupRequestResponse":
+                handleSignupRequestResponse(dictionary: dictionary)
             default:
                 return
             }
@@ -299,4 +373,58 @@ extension ViewController: StreamDelegate {
         self.present(newScreen, animated: true, completion: nil)
     }
 
+    func handleSuccessfullyVoted(dictionary:[String: Any]) {
+        let timePostSubmittedAsString = String(dictionary["timePostSubmitted"] as! CLongLong)
+        let voteIndex = dictionary["voteIndex"] as! Int
+        
+        if var votesToIndices:[String:Int] = UserDefaults.standard.dictionary(forKey: "votingHistory") as! [String:Int]? {
+            votesToIndices[timePostSubmittedAsString] = voteIndex
+            UserDefaults.standard.set(votesToIndices, forKey: "votingHistory")
+        } else {
+            var votesToIndices:[String:Int] = [:]
+            votesToIndices[timePostSubmittedAsString] = voteIndex
+            UserDefaults.standard.set(votesToIndices, forKey: "votingHistory")
+        }
+    }
+    
+    func handleLoginRequestResponse(dictionary:[String: Any]) {
+        let username = dictionary["username"] as! String
+        let successfullyLoggedIn = dictionary["successfullyLoggedIn"] as! Bool
+        
+        if (!successfullyLoggedIn) {
+            global.showSimpleAlert(title: "The username or password is incorrect", message: "Please try again", vc: self)
+        } else {
+            UserDefaults.standard.set(username, forKey: "username")
+            global.username = username
+            createPostAction(self)
+        }
+    }
+    
+    func handleSignupRequestResponse(dictionary:[String: Any]) {
+        let username = dictionary["username"] as! String
+        let successfullyCreatedAccount = dictionary["successfullyCreatedAccount"] as! Bool
+        
+        if (!successfullyCreatedAccount) {
+            global.showSimpleAlert(title: "The username \(username) is already taken", message: "Please choose a different username", vc: self)
+        } else {
+            UserDefaults.standard.set(username, forKey: "username")
+            global.username = username
+            createPostAction(self)
+        }
+    }
+}
+
+extension ViewController {
+    @objc func textChanged(_ sender: Any) {
+        let tf = sender as! UITextField
+        var resp : UIResponder! = tf
+        while !(resp is UIAlertController) { resp = resp.next }
+        let alert = resp as! UIAlertController
+        
+        if ((alert.textFields![0].text) != "" && alert.textFields![1].text != "") {
+            alert.actions[1].isEnabled = true
+        } else {
+            alert.actions[1].isEnabled = false
+        }
+    }
 }

@@ -65,7 +65,7 @@ class SelectPollOptionsViewController: UIViewController {
             let ageRange = (currentlyCheckedYourAgeIndex != 0) ? global.yourAgeOptions[currentlyCheckedYourAgeIndex]: nil
             let gender = (currentlyCheckedYourGenderIndex != 0) ? global.yourGenderOptions[currentlyCheckedYourGenderIndex]: nil
             
-            let post:Poast = Poast(title: postTitle, message: postMessage, votingOptions: votingOptions, correspondingVotes: correspondingVotes, category: postCategory, age: ageRange, gender: gender, posterUsername: global.username, timePostSubmitted: nil)
+            let post:Poast = Poast(title: postTitle, message: postMessage, votingOptions: votingOptions, correspondingVotes: correspondingVotes, category: postCategory, age: ageRange, gender: gender, posterUsername: global.username!, timePostSubmitted: nil)
             newScreen.post = post
             
             newScreen.modalPresentationStyle = .fullScreen

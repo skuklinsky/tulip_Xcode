@@ -11,7 +11,7 @@ import UIKit
 
 class Global {
     
-    var username:String = ""
+    var username:String? = UserDefaults.standard.string(forKey: "username")
     
     let pollOptionTrackTintColor:UIColor = UIColor.init(red: 228/255, green: 228/255, blue: 230/255, alpha: 1)
     let pollOptionColorDefault = UIColor.init(red: 15/255, green: 203/255, blue: 255/255, alpha: 1)
@@ -68,23 +68,28 @@ class Global {
     
     func sendMessage(dictionaryMessage:[String:Any], vc:Any) {
         
-        var dictionaryMessageQuotesFixed:[String:Any] = dictionaryMessage
-        
-        if(dictionaryMessageQuotesFixed["title"] != nil) {
-            var stringTitle:String = dictionaryMessageQuotesFixed["title"]! as! String
-            stringTitle = stringTitle.replacingOccurrences(of: "\\'", with: "zzz")
-            dictionaryMessageQuotesFixed["title"] = stringTitle
-            
-            var stringMessage:String = dictionaryMessageQuotesFixed["message"]! as! String
-            stringMessage = stringMessage.replacingOccurrences(of: "\\'", with: "zzz")
-            dictionaryMessageQuotesFixed["message"] = stringMessage
-            
-            
+        // replace wierd quotes with regular quotes so they get auto-escaped
+        var messageWithNormalizedQuotes = dictionaryMessage
+        if let title = dictionaryMessage["title"] as! String? {
+            messageWithNormalizedQuotes["title"] = replaceOccurencesOfQuotesBeforeSending(string: title)
         }
-        
-        if dictionaryMessageQuotesFixed["message"] != nil {
-            print(dictionaryMessageQuotesFixed["message"] as! String)
+        if let message = dictionaryMessage["message"] as! String? {
+            messageWithNormalizedQuotes["message"] = replaceOccurencesOfQuotesBeforeSending(string: message)
         }
+        if let votingOptions = dictionaryMessage["votingOptions"] as! [String]? {
+            var newVotingOptions:[String] = []
+            for index in 0..<votingOptions.count {
+                newVotingOptions.append(replaceOccurencesOfQuotesBeforeSending(string: votingOptions[index]))
+            }
+            messageWithNormalizedQuotes["votingOptions"] = getJsonFromStringList(stringList: newVotingOptions)
+        }
+        if let username = dictionaryMessage["username"] as! String? {
+            messageWithNormalizedQuotes["username"] = replaceOccurencesOfQuotesBeforeSending(string: username)
+        }
+        if let password = dictionaryMessage["password"] as! String? {
+            messageWithNormalizedQuotes["password"] = replaceOccurencesOfQuotesBeforeSending(string: password)
+        }
+        // finish replacing
         
         
         let futureTime = DispatchTime.now() + global.CONNECTION_TIMEOUT_THRESHOLD
@@ -96,7 +101,11 @@ class Global {
             }
         }
         
+<<<<<<< HEAD
         if let theJSONData = try? JSONSerialization.data(withJSONObject: dictionaryMessageQuotesFixed, options: []) {
+=======
+        if let theJSONData = try? JSONSerialization.data(withJSONObject: messageWithNormalizedQuotes, options: []) {
+>>>>>>> 43ed3f450af85999bb2ae3dac598e28bb97ea3e1
             if let theJSONText = String(data: theJSONData, encoding: .utf8) {
                 
                 let msgLengthAsInt:Int32 = Int32(theJSONText.count)
@@ -182,6 +191,14 @@ class Global {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         (vc as AnyObject).present(alert, animated: true, completion: nil)
+    }
+    
+    func replaceOccurencesOfQuotesBeforeSending(string:String) -> String {
+        var strToReturn = string.replacingOccurrences(of: "‘", with: "'")
+        strToReturn = strToReturn.replacingOccurrences(of: "“", with: "\"")
+        strToReturn = strToReturn.replacingOccurrences(of: "’", with: "'")
+        strToReturn = strToReturn.replacingOccurrences(of: "”", with: "\"")
+        return strToReturn
     }
 }
 
