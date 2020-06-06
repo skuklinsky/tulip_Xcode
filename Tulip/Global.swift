@@ -68,6 +68,25 @@ class Global {
     
     func sendMessage(dictionaryMessage:[String:Any], vc:Any) {
         
+        var dictionaryMessageQuotesFixed:[String:Any] = dictionaryMessage
+        
+        if(dictionaryMessageQuotesFixed["title"] != nil) {
+            var stringTitle:String = dictionaryMessageQuotesFixed["title"]! as! String
+            stringTitle = stringTitle.replacingOccurrences(of: "\\'", with: "zzz")
+            dictionaryMessageQuotesFixed["title"] = stringTitle
+            
+            var stringMessage:String = dictionaryMessageQuotesFixed["message"]! as! String
+            stringMessage = stringMessage.replacingOccurrences(of: "\\'", with: "zzz")
+            dictionaryMessageQuotesFixed["message"] = stringMessage
+            
+            
+        }
+        
+        if dictionaryMessageQuotesFixed["message"] != nil {
+            print(dictionaryMessageQuotesFixed["message"] as! String)
+        }
+        
+        
         let futureTime = DispatchTime.now() + global.CONNECTION_TIMEOUT_THRESHOLD
         let currentNumMessages = global.numberReceivedMessages
         DispatchQueue.main.asyncAfter(deadline: futureTime) {
@@ -77,7 +96,7 @@ class Global {
             }
         }
         
-        if let theJSONData = try? JSONSerialization.data(withJSONObject: dictionaryMessage, options: []) {
+        if let theJSONData = try? JSONSerialization.data(withJSONObject: dictionaryMessageQuotesFixed, options: []) {
             if let theJSONText = String(data: theJSONData, encoding: .utf8) {
                 
                 let msgLengthAsInt:Int32 = Int32(theJSONText.count)
@@ -92,7 +111,7 @@ class Global {
                         return
                     }
                     outputStream.write(pointer, maxLength: data.count)
-                    print("Message sent with instruction: " + (dictionaryMessage["instruction"]! as! String))
+                    print("Message sent with instruction: " + (dictionaryMessageQuotesFixed["instruction"]! as! String))
                 }
             }
         }

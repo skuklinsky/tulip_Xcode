@@ -24,6 +24,8 @@ class SelectPollOptionsViewController: UIViewController {
     var currentlyCheckedYourAgeIndex:Int = 0
     var currentlyCheckedYourGenderIndex:Int = 0
     
+    var pollOptionsAdded:[String] = []
+    
     let pollOptionsTableViewRowHeight:CGFloat = 43.0
     let maxPollOptionsTableViewHeight:CGFloat = 300.0
     let dropDownTableViewRowHeight:CGFloat = 46.5
@@ -33,6 +35,10 @@ class SelectPollOptionsViewController: UIViewController {
     var postMessage = ""
     
     var currentDropDown = "yourAge"
+    
+    func addPollOption(option:String) {
+        pollOptionsAdded.insert(option, at:0)
+    }
     
     @IBAction func backButtonAction(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
@@ -47,7 +53,14 @@ class SelectPollOptionsViewController: UIViewController {
         } else {
             let newScreen = self.storyboard?.instantiateViewController(withIdentifier: "ReviewPostViewController") as! ReviewPostViewController
             
-            let votingOptions = pollOptionsTableView.indexPathsForSelectedRows!.map({global.categoryToOptions[postCategory]![$0.row]})
+            var votingOptions:[String] = []
+            for indexPath in pollOptionsTableView.indexPathsForSelectedRows! {
+                if (indexPath.row <= pollOptionsAdded.count) {
+                    votingOptions.append(pollOptionsAdded[indexPath.row - 1])
+                } else {
+                    votingOptions.append(global.categoryToOptions[postCategory]![indexPath.row - pollOptionsAdded.count - 1])
+                }
+            }
             let correspondingVotes = votingOptions.map({_ in 0})
             let ageRange = (currentlyCheckedYourAgeIndex != 0) ? global.yourAgeOptions[currentlyCheckedYourAgeIndex]: nil
             let gender = (currentlyCheckedYourGenderIndex != 0) ? global.yourGenderOptions[currentlyCheckedYourGenderIndex]: nil
@@ -145,7 +158,7 @@ extension SelectPollOptionsViewController: UITableViewDelegate, UITableViewDataS
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (tableView == pollOptionsTableView) {
-            return global.categoryToOptions[postCategory]!.count
+            return global.categoryToOptions[postCategory]!.count + pollOptionsAdded.count + 1
         } else if (tableView == dropDownTableView) {
             if (currentDropDown == "yourAge") {
                 return global.yourAgeOptions.count
@@ -164,8 +177,17 @@ extension SelectPollOptionsViewController: UITableViewDelegate, UITableViewDataS
         if (tableView == pollOptionsTableView) {
             let cell:SelectPollOptionsCell = pollOptionsTableView.dequeueReusableCell(withIdentifier: "SelectPollOptionsCell") as! SelectPollOptionsCell
             
-            let name = global.categoryToOptions[postCategory]![indexPath.row]
-            cell.setCell(cellText: name)
+            var name:String? = nil
+            if (indexPath.row == 0) {
+                name = "Add poll option"
+            } else if (indexPath.row < pollOptionsAdded.count + 1) {
+                name = pollOptionsAdded[indexPath.row - 1]
+            } else {
+                name = global.categoryToOptions[postCategory]![indexPath.row - pollOptionsAdded.count - 1]
+            }
+            
+            cell.setCell(cellText: name!, tableView: pollOptionsTableView, parentViewController: self, rowIndex: indexPath.row)
+            cell.setEditable(isEditable: (indexPath.row == 0))
             return cell
         } else if (tableView == dropDownTableView) {
             let cell:DropDownCell = dropDownTableView.dequeueReusableCell(withIdentifier: "AgeGenderDropDownCell") as! DropDownCell

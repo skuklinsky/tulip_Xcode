@@ -64,6 +64,12 @@ class CreatePostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
+        
+        tap.cancelsTouchesInView = false 
+        
+        view.addGestureRecognizer(tap)
+        
         dropDownTableView.delegate = self
         dropDownTableView.dataSource = self
                 
@@ -78,6 +84,10 @@ class CreatePostViewController: UIViewController {
         
         let clickedBackgroundGesture = UITapGestureRecognizer(target: self, action: #selector(clickedBackgroundAction))
         grayBackgroundView.addGestureRecognizer(clickedBackgroundGesture)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     func getNumWords(text:String) -> Int {

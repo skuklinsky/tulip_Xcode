@@ -17,7 +17,7 @@
 		24AFF594248063580084302C /* CreatePostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF593248063580084302C /* CreatePostViewController.swift */; };
 		24AFF59A2480E5100084302C /* CustomTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF5992480E5100084302C /* CustomTextView.swift */; };
 		24AFF59C2480EA5D0084302C /* SelectPollOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF59B2480EA5D0084302C /* SelectPollOptionsViewController.swift */; };
-		24AFF59E2480EC480084302C /* CustomLabelPollOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF59D2480EC480084302C /* CustomLabelPollOptionCell.swift */; };
+		24AFF59E2480EC480084302C /* CustomTextFieldlPollOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF59D2480EC480084302C /* CustomTextFieldlPollOptionCell.swift */; };
 		24BCC588248305D0005A4DBC /* CustomTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24BCC587248305D0005A4DBC /* CustomTableView.swift */; };
 		24EB10BA247DAAE6000F55B5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24EB10B9247DAAE6000F55B5 /* AppDelegate.swift */; };
 		24EB10BC247DAAE6000F55B5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24EB10BB247DAAE6000F55B5 /* SceneDelegate.swift */; };
@@ -58,7 +58,7 @@
 		24AFF593248063580084302C /* CreatePostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostViewController.swift; sourceTree = "<group>"; };
 		24AFF5992480E5100084302C /* CustomTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextView.swift; sourceTree = "<group>"; };
 		24AFF59B2480EA5D0084302C /* SelectPollOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPollOptionsViewController.swift; sourceTree = "<group>"; };
-		24AFF59D2480EC480084302C /* CustomLabelPollOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabelPollOptionCell.swift; sourceTree = "<group>"; };
+		24AFF59D2480EC480084302C /* CustomTextFieldlPollOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextFieldlPollOptionCell.swift; sourceTree = "<group>"; };
 		24BCC587248305D0005A4DBC /* CustomTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableView.swift; sourceTree = "<group>"; };
 		24EB10B6247DAAE6000F55B5 /* Tulip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tulip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		24EB10B9247DAAE6000F55B5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -136,7 +136,7 @@
 				245F743A247F2D9100D1E27D /* CustomProgressBar.swift */,
 				24AFF5992480E5100084302C /* CustomTextView.swift */,
 				24BCC587248305D0005A4DBC /* CustomTableView.swift */,
-				24AFF59D2480EC480084302C /* CustomLabelPollOptionCell.swift */,
+				24AFF59D2480EC480084302C /* CustomTextFieldlPollOptionCell.swift */,
 				245F743C247F2EFB00D1E27D /* Poast.swift */,
 				24EB10BF247DAAE6000F55B5 /* Main.storyboard */,
 				241343AB2481DE9C0064BBF6 /* Global.swift */,
@@ -305,7 +305,7 @@
 				241A534E248320A20073D0B9 /* ReviewPostViewController.swift in Sources */,
 				24BCC588248305D0005A4DBC /* CustomTableView.swift in Sources */,
 				2474A2762484415200101C97 /* ProfileViewController.swift in Sources */,
-				24AFF59E2480EC480084302C /* CustomLabelPollOptionCell.swift in Sources */,
+				24AFF59E2480EC480084302C /* CustomTextFieldlPollOptionCell.swift in Sources */,
 				24EB10BE247DAAE6000F55B5 /* ViewController.swift in Sources */,
 				24EB10EC247DADAB000F55B5 /* MainEntryCell.swift in Sources */,
 				24AFF59A2480E5100084302C /* CustomTextView.swift in Sources */,

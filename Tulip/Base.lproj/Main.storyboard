@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -730,26 +730,24 @@
                                             <rect key="frame" x="0.0" y="0.0" width="398" height="109"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r4A-B3-SQs" customClass="CustomLabelPollOptionCell" customModule="Tulip" customModuleProvider="target">
-                                                    <rect key="frame" x="8" y="8" width="382" height="101"/>
+                                                <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iHS-rC-SWr" customClass="CustomTextFieldPollOptionCell" customModule="Tulip" customModuleProvider="target">
+                                                    <rect key="frame" x="28" y="8" width="342" height="101"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="height" constant="35" id="c3c-zJ-Qm4"/>
+                                                        <constraint firstAttribute="height" constant="35" id="gmh-8s-aYj"/>
                                                     </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                                </textField>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="r4A-B3-SQs" firstAttribute="top" secondItem="eFB-Wy-M6Y" secondAttribute="top" constant="8" id="dki-cS-S3I"/>
-                                                <constraint firstItem="r4A-B3-SQs" firstAttribute="leading" secondItem="eFB-Wy-M6Y" secondAttribute="leading" constant="8" id="fGV-jY-DT4"/>
-                                                <constraint firstAttribute="trailing" secondItem="r4A-B3-SQs" secondAttribute="trailing" constant="8" id="lUs-kv-mgv"/>
-                                                <constraint firstAttribute="bottom" secondItem="r4A-B3-SQs" secondAttribute="bottom" id="r33-tv-n1i"/>
+                                                <constraint firstItem="iHS-rC-SWr" firstAttribute="leading" secondItem="eFB-Wy-M6Y" secondAttribute="leadingMargin" constant="8" id="Ea5-Fh-jtj"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="iHS-rC-SWr" secondAttribute="trailing" constant="8" id="Pd4-JI-hLb"/>
+                                                <constraint firstAttribute="bottom" secondItem="iHS-rC-SWr" secondAttribute="bottom" id="TaD-oc-RUH"/>
+                                                <constraint firstItem="iHS-rC-SWr" firstAttribute="top" secondItem="eFB-Wy-M6Y" secondAttribute="top" constant="8" id="XTT-Eg-cYc"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="choosePollOptionCreatePost" destination="r4A-B3-SQs" id="u4l-Ag-xfT"/>
-                                            <outlet property="pollOptionLabel" destination="r4A-B3-SQs" id="1pY-ut-9Gn"/>
+                                            <outlet property="choosePollOptionTextField" destination="iHS-rC-SWr" id="lMR-rr-zT8"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

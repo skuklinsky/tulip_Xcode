@@ -9,24 +9,54 @@
 import Foundation
 import UIKit
 
-class SelectPollOptionsCell: UITableViewCell {
+class SelectPollOptionsCell: UITableViewCell, UITextFieldDelegate {
     
-    @IBOutlet weak var choosePollOptionCreatePost: CustomLabelPollOptionCell!
-    @IBOutlet weak var pollOptionLabel: CustomLabelPollOptionCell!
+    var tableView:UITableView? = nil
+    var parentViewController:SelectPollOptionsViewController? = nil
+    var rowIndex:Int? = nil
     
-    func setCell(cellText:String) {
-        choosePollOptionCreatePost.text = cellText
+    @IBOutlet weak var choosePollOptionTextField: CustomTextFieldPollOptionCell!
+    
+    @IBAction func choosePollOptionTextFieldEditingDidEnd(_ sender: Any) {
+    
+    }
+    
+    func setCell(cellText:String, tableView:UITableView, parentViewController:SelectPollOptionsViewController, rowIndex:Int) {
+        self.tableView = tableView
+        self.parentViewController = parentViewController
+        choosePollOptionTextField.text = cellText
+        self.choosePollOptionTextField.delegate = self
+        self.rowIndex = rowIndex
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        parentViewController!.addPollOption(option:choosePollOptionTextField.text!)
+        tableView?.reloadData()
+        return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.text = ""
+    }
+    
+    func setEditable(isEditable:Bool) {
+        choosePollOptionTextField.isUserInteractionEnabled = isEditable
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
+        
+        if (rowIndex == 0) {
+            return
+        }
+        
         super.setSelected(selected, animated: animated)
         
         contentView.backgroundColor = .systemBackground
 
         if selected {
-            pollOptionLabel.backgroundColor = global.pollOptionColorWhenSelectedAsOption
+            choosePollOptionTextField.backgroundColor = global.pollOptionColorWhenSelectedAsOption
         } else {
-            pollOptionLabel.backgroundColor = global.pollOptionTrackTintColor
+            choosePollOptionTextField.backgroundColor = global.pollOptionTrackTintColor
         }
     }
     

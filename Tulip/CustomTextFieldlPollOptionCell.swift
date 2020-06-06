@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class CustomLabelPollOptionCell: UILabel {
+class CustomTextFieldPollOptionCell: UITextField {
     
     var topInset: CGFloat = 8.0
     var bottomInset: CGFloat = 8.0
@@ -22,12 +22,13 @@ class CustomLabelPollOptionCell: UILabel {
     }
     
     func setup() {
-        self.layer.cornerRadius = 14.0
+        self.layer.cornerRadius = 14
         self.clipsToBounds = true
         self.backgroundColor = global.pollOptionTrackTintColor
     }
     
     // next 3 functions set insets for label, needed because of corner rounding
+    /*
     override func drawText(in rect: CGRect) {
         let insets = UIEdgeInsets(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)
         super.drawText(in: rect.inset(by: insets))
@@ -42,5 +43,19 @@ class CustomLabelPollOptionCell: UILabel {
             // ensures this works within stack views if multi-line
             preferredMaxLayoutWidth = bounds.width - (leftInset + rightInset)
         }
+    }*/
+    
+    let padding = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
+
+    override open func textRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
+
+    override open func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
+    }
+
+    override open func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: padding)
     }
 }
