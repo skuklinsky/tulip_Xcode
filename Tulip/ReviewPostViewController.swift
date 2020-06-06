@@ -20,7 +20,7 @@ class ReviewPostViewController: UIViewController {
     }
     
     @IBAction func nextButtonAction(_ sender: Any) {
-        let dictionaryToSend:[String: Any] = ["instruction": "submitPost", "title": post!.title, "message": post!.message, "votingOptions": global.getJsonFromStringList(stringList: post!.votingOptions), "category": post!.category, "age": post!.age ?? "", "gender": post!.gender ?? "", "posterUsername": post!.posterUsername]
+        let dictionaryToSend:[String: Any] = ["instruction": "submitPost", "title": post!.title, "message": post!.message, "votingOptions": post!.votingOptions, "category": post!.category, "age": post!.age ?? "", "gender": post!.gender ?? "", "posterUsername": post!.posterUsername]
         global.sendMessage(dictionaryMessage: dictionaryToSend, vc: self)
     }
     

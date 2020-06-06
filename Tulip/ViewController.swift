@@ -84,7 +84,7 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         global.setupNetworkCommunication(vc: self)
-        global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
+        contentTableViewRefreshAction()
         
         contentTableView.delegate = self
         contentTableView.dataSource = self
@@ -180,7 +180,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             }
             
             if (sortByCurrentlyCheckedIndex != oldSortByIndex || categoriesCurrentlyCheckedIndex != oldCategoriesIndex) {
-                global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
+                contentTableViewRefreshAction()
             }
             
             let futureTime = DispatchTime.now() + global.dropDownTableViewDisappearDelay

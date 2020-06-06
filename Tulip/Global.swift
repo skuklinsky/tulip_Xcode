@@ -68,6 +68,24 @@ class Global {
     
     func sendMessage(dictionaryMessage:[String:Any], vc:Any) {
         
+        // replace wierd quotes with regular quotes so they get auto-escaped
+        var messageWithNormalizedQuotes = dictionaryMessage
+        if let title = dictionaryMessage["title"] as! String? {
+            messageWithNormalizedQuotes["title"] = replaceOccurencesOfQuotesBeforeSending(string: title)
+        }
+        if let message = dictionaryMessage["message"] as! String? {
+            messageWithNormalizedQuotes["message"] = replaceOccurencesOfQuotesBeforeSending(string: message)
+        }
+        if let votingOptions = dictionaryMessage["votingOptions"] as! [String]? {
+            var newVotingOptions:[String] = []
+            for index in 0..<votingOptions.count {
+                newVotingOptions.append(replaceOccurencesOfQuotesBeforeSending(string: votingOptions[index]))
+            }
+            messageWithNormalizedQuotes["votingOptions"] = getJsonFromStringList(stringList: newVotingOptions)
+        }
+        // finish replacing
+        
+        
         let futureTime = DispatchTime.now() + global.CONNECTION_TIMEOUT_THRESHOLD
         let currentNumMessages = global.numberReceivedMessages
         DispatchQueue.main.asyncAfter(deadline: futureTime) {
@@ -77,7 +95,7 @@ class Global {
             }
         }
         
-        if let theJSONData = try? JSONSerialization.data(withJSONObject: dictionaryMessage, options: []) {
+        if let theJSONData = try? JSONSerialization.data(withJSONObject: messageWithNormalizedQuotes, options: []) {
             if let theJSONText = String(data: theJSONData, encoding: .utf8) {
                 
                 let msgLengthAsInt:Int32 = Int32(theJSONText.count)
@@ -163,6 +181,14 @@ class Global {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         (vc as AnyObject).present(alert, animated: true, completion: nil)
+    }
+    
+    func replaceOccurencesOfQuotesBeforeSending(string:String) -> String {
+        var strToReturn = string.replacingOccurrences(of: "‘", with: "'")
+        strToReturn = strToReturn.replacingOccurrences(of: "“", with: "\"")
+        strToReturn = strToReturn.replacingOccurrences(of: "’", with: "'")
+        strToReturn = strToReturn.replacingOccurrences(of: "”", with: "\"")
+        return strToReturn
     }
 }
 
