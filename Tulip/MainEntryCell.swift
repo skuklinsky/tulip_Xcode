@@ -68,6 +68,7 @@ class MainEntryCell: UITableViewCell {
     @IBOutlet weak var cellMessageProfileHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var totalVotesLabelProfile: UILabel!
     
+    var vc:ViewController? = nil
     
     var progressBars:[CustomProgressBar] = []
     var yourVoteImageViews:[UIImageView] = []
@@ -79,34 +80,66 @@ class MainEntryCell: UITableViewCell {
     
     
     @IBAction func vo1Clicked(_ sender: Any) {
-        userVoted(userVoteIndex: 0, forFirstTime: true)
+        if (global.username == "admin") {
+            howManyVotesAlert(userVoteIndex: 0)
+        } else {
+            userVoted(userVoteIndex: 0, forFirstTime: true, numVotes: 1, isAdmin: false)
+        }
     }
     
     @IBAction func vo2Clicked(_ sender: Any) {
-        userVoted(userVoteIndex: 1, forFirstTime: true)
+        if (global.username == "admin") {
+            howManyVotesAlert(userVoteIndex: 1)
+        } else {
+            userVoted(userVoteIndex: 1, forFirstTime: true, numVotes: 1, isAdmin: false)
+        }
     }
     
     @IBAction func vo3Clicked(_ sender: Any) {
-        userVoted(userVoteIndex: 2, forFirstTime: true)
+        if (global.username == "admin") {
+            howManyVotesAlert(userVoteIndex: 2)
+        } else {
+            userVoted(userVoteIndex: 2, forFirstTime: true, numVotes: 1, isAdmin: false)
+        }
     }
     
     @IBAction func vo4Clicked(_ sender: Any) {
-        userVoted(userVoteIndex: 3, forFirstTime: true)
+        if (global.username == "admin") {
+            howManyVotesAlert(userVoteIndex: 3)
+        } else {
+            userVoted(userVoteIndex: 3, forFirstTime: true, numVotes: 1, isAdmin: false)
+        }
     }
     
     @IBAction func vo5Clicked(_ sender: Any) {
-        userVoted(userVoteIndex: 4, forFirstTime: true)
+        if (global.username == "admin") {
+            howManyVotesAlert(userVoteIndex: 4)
+        } else {
+            userVoted(userVoteIndex: 4, forFirstTime: true, numVotes: 1, isAdmin: false)
+        }
     }
     
-    func userVoted(userVoteIndex:Int, forFirstTime:Bool) {
+    // for admin only
+    func howManyVotesAlert(userVoteIndex:Int) {
+        let alertController = UIAlertController(title: "How many votes?", message: "", preferredStyle: .alert)
+        alertController.addTextField(configurationHandler: {(textField: UITextField) in
+            textField.placeholder = "Number of votes"
+        })
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Submit", style: .default, handler: {_ in self.userVoted(userVoteIndex: userVoteIndex, forFirstTime: true, numVotes: Int(alertController.textFields![0].text!)!, isAdmin: true)}))
+        vc!.present(alertController, animated: true, completion: nil)
+    }
+    // end for admin only
+    
+    func userVoted(userVoteIndex:Int, forFirstTime:Bool, numVotes:Int, isAdmin:Bool) {
                 
         percentagesArray = []
         
         if (forFirstTime) {
-            post?.correspondingVotes[userVoteIndex] += 1
-            totalVotes += 1
+            post?.correspondingVotes[userVoteIndex] += numVotes
+            totalVotes += numVotes
             
-            global.sendMessage(dictionaryMessage: ["instruction": "voteOnPost", "timePostSubmitted": post!.timePostSubmitted!, "voteIndex": userVoteIndex], vc: ViewController.self)
+            global.sendMessage(dictionaryMessage: ["instruction": "voteOnPost", "timePostSubmitted": post!.timePostSubmitted!, "voteIndex": userVoteIndex, "numVotes": numVotes], vc: ViewController.self)
         }
                 
         var maxVotes = -1
@@ -119,11 +152,13 @@ class MainEntryCell: UITableViewCell {
         }
         totalVotesLabel.text = "Total Votes: \(totalVotes)"
                 
-        votingOption1.isEnabled = false
-        votingOption2.isEnabled = false
-        votingOption3.isEnabled = false
-        votingOption4.isEnabled = false
-        votingOption5.isEnabled = false
+        if (!isAdmin) { // if admin, can vote again so don't disable
+            votingOption1.isEnabled = false
+            votingOption2.isEnabled = false
+            votingOption3.isEnabled = false
+            votingOption4.isEnabled = false
+            votingOption5.isEnabled = false
+        }
                 
         cpb1.progress = percentagesArray[0]
         cpb1.progressTintColor = global.pollOptionColorDefault
@@ -148,10 +183,11 @@ class MainEntryCell: UITableViewCell {
         
     }
     
-    func setCell(post:Poast, tableView:UITableView) {
+    func setCell(post:Poast, tableView:UITableView, vc:ViewController) {
         
         self.post = post
         self.tableView = tableView
+        self.vc = vc
         self.totalVotes = 0
         
         let messageLabelTapped = UITapGestureRecognizer(target: self, action: #selector(messageLabelTappedAction))
@@ -205,7 +241,8 @@ class MainEntryCell: UITableViewCell {
         
         if let votingHistoryDictionary = UserDefaults.standard.dictionary(forKey: "votingHistory") as! [String: Int]? {
             if (votingHistoryDictionary.keys.contains(String(post.timePostSubmitted!))) {
-                userVoted(userVoteIndex: votingHistoryDictionary[String(post.timePostSubmitted!)]!, forFirstTime: false)
+                let isAdmin = (global.username == "admin")
+                userVoted(userVoteIndex: votingHistoryDictionary[String(post.timePostSubmitted!)]!, forFirstTime: false, numVotes: 1, isAdmin: isAdmin)
             }
         }
     }

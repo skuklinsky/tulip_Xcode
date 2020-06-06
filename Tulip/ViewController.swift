@@ -30,16 +30,16 @@ class ViewController: UIViewController {
     var sortByCurrentlyCheckedIndex = 0
     var categoriesCurrentlyCheckedIndex = 0
     
-    @IBAction func unwindToViewController(segue: UIStoryboardSegue) {
-    }
+    var createPostOrViewProfile:String = ""
     
-    @IBAction func settingsAction(_ sender: Any) {
+    @IBAction func unwindToViewController(segue: UIStoryboardSegue) {
     }
     
     @IBAction func profileAction(_ sender: Any) {
         if let _ = global.username {
             global.sendMessage(dictionaryMessage: ["instruction": "getMyPosts", "username": global.username!], vc: self)
         } else {
+            createPostOrViewProfile = "viewProfile"
             loginOrSignup()
         }
     }
@@ -52,6 +52,7 @@ class ViewController: UIViewController {
             newScreen.modalPresentationStyle = .fullScreen
             self.present(newScreen, animated: true, completion: nil)
         } else {
+            createPostOrViewProfile = "createPost"
             loginOrSignup()
         }
     }
@@ -227,7 +228,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         } else if (tableView == contentTableView) {
             
             let cell:MainEntryCell = contentTableView.dequeueReusableCell(withIdentifier: "MainEntryCell") as! MainEntryCell
-            cell.setCell(post: posts[indexPath.row], tableView: contentTableView)
+            cell.setCell(post: posts[indexPath.row], tableView: contentTableView, vc: self)
             return cell
         }
         
@@ -396,7 +397,12 @@ extension ViewController: StreamDelegate {
         } else {
             UserDefaults.standard.set(username, forKey: "username")
             global.username = username
-            createPostAction(self)
+            
+            if (createPostOrViewProfile == "viewProfile") {
+                profileAction(self)
+            } else {
+                createPostAction(self)
+            }
         }
     }
     
@@ -409,7 +415,12 @@ extension ViewController: StreamDelegate {
         } else {
             UserDefaults.standard.set(username, forKey: "username")
             global.username = username
-            createPostAction(self)
+            
+            if (createPostOrViewProfile == "viewProfile") {
+                profileAction(self)
+            } else {
+                createPostAction(self)
+            }
         }
     }
 }
