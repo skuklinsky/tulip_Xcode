@@ -215,6 +215,8 @@ extension ViewController: StreamDelegate {
                 handleGetMainFeedPostsResponse(dictionary: dictionary)
             case "getMyPostsResponse":
                 handleGetMyPostsResponse(dictionary: dictionary)
+            case "successfullyVoted":
+                handleSuccessfullyVoted(dictionary: dictionary)
             default:
                 return
             }
@@ -299,4 +301,17 @@ extension ViewController: StreamDelegate {
         self.present(newScreen, animated: true, completion: nil)
     }
 
+    func handleSuccessfullyVoted(dictionary:[String: Any]) {
+        let timePostSubmittedAsString = String(dictionary["timePostSubmitted"] as! CLongLong)
+        let voteIndex = dictionary["voteIndex"] as! Int
+        
+        if var votesToIndices:[String:Int] = UserDefaults.standard.dictionary(forKey: "votingHistory") as! [String:Int]? {
+            votesToIndices[timePostSubmittedAsString] = voteIndex
+            UserDefaults.standard.set(votesToIndices, forKey: "votingHistory")
+        } else {
+            var votesToIndices:[String:Int] = [:]
+            votesToIndices[timePostSubmittedAsString] = voteIndex
+            UserDefaults.standard.set(votesToIndices, forKey: "votingHistory")
+        }
+    }
 }

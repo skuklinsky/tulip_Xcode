@@ -79,31 +79,36 @@ class MainEntryCell: UITableViewCell {
     
     
     @IBAction func vo1Clicked(_ sender: Any) {
-        userVoted(userVoteIndex: 0)
+        userVoted(userVoteIndex: 0, forFirstTime: true)
     }
     
     @IBAction func vo2Clicked(_ sender: Any) {
-        userVoted(userVoteIndex: 1)
+        userVoted(userVoteIndex: 1, forFirstTime: true)
     }
     
     @IBAction func vo3Clicked(_ sender: Any) {
-        userVoted(userVoteIndex: 2)
+        userVoted(userVoteIndex: 2, forFirstTime: true)
     }
     
     @IBAction func vo4Clicked(_ sender: Any) {
-        userVoted(userVoteIndex: 3)
+        userVoted(userVoteIndex: 3, forFirstTime: true)
     }
     
     @IBAction func vo5Clicked(_ sender: Any) {
-        userVoted(userVoteIndex: 4)
+        userVoted(userVoteIndex: 4, forFirstTime: true)
     }
     
-    func userVoted(userVoteIndex:Int) {
-        
+    func userVoted(userVoteIndex:Int, forFirstTime:Bool) {
+                
         percentagesArray = []
-        post?.correspondingVotes[userVoteIndex] += 1
-        totalVotes += 1
         
+        if (forFirstTime) {
+            post?.correspondingVotes[userVoteIndex] += 1
+            totalVotes += 1
+            
+            global.sendMessage(dictionaryMessage: ["instruction": "voteOnPost", "timePostSubmitted": post!.timePostSubmitted!, "voteIndex": userVoteIndex], vc: ViewController.self)
+        }
+                
         var maxVotes = -1
         for index in 0..<post!.correspondingVotes.count {
             percentagesArray.append(Float(post!.correspondingVotes[index]) / Float(totalVotes))
@@ -113,8 +118,7 @@ class MainEntryCell: UITableViewCell {
             }
         }
         totalVotesLabel.text = "Total Votes: \(totalVotes)"
-        
-        post!.userVoteIndex = userVoteIndex
+                
         votingOption1.isEnabled = false
         votingOption2.isEnabled = false
         votingOption3.isEnabled = false
@@ -142,7 +146,6 @@ class MainEntryCell: UITableViewCell {
         progressBars[indexOfOptionWithMostVotes].progressTintColor = global.pollOptionColorMostVotes
         yourVoteImageViews[userVoteIndex].image = UIImage(named: "profile")
         
-        global.sendMessage(dictionaryMessage: ["instruction": "voteOnPost", "timePostSubmitted": post!.timePostSubmitted!, "voteIndex": userVoteIndex], vc: ViewController.self)
     }
     
     func setCell(post:Poast, tableView:UITableView) {
@@ -200,10 +203,11 @@ class MainEntryCell: UITableViewCell {
             yourVote5.isHidden = true
         }
         
-        if (post.userVoteIndex != -1) { // if user has already voted
-            userVoted(userVoteIndex: post.userVoteIndex)
+        if let votingHistoryDictionary = UserDefaults.standard.dictionary(forKey: "votingHistory") as! [String: Int]? {
+            if (votingHistoryDictionary.keys.contains(String(post.timePostSubmitted!))) {
+                userVoted(userVoteIndex: votingHistoryDictionary[String(post.timePostSubmitted!)]!, forFirstTime: false)
+            }
         }
-        
     }
     
     func setCellReviewPost(post:Poast, tableView:UITableView) {

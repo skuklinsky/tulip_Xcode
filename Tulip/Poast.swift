@@ -18,9 +18,7 @@ class Poast {
     var gender:String?
     var posterUsername:String
     var timePostSubmitted:CLongLong?
-    
-    var userVoteIndex:Int = -1
-    
+        
     init(title:String, message:String, votingOptions:[String], correspondingVotes:[Int], category:String, age:String?, gender:String?, posterUsername:String, timePostSubmitted:CLongLong?) {
         self.title = title
         self.message = message
