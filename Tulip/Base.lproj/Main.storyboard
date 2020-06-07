@@ -77,6 +77,17 @@
                                             <constraint firstAttribute="height" constant="2" id="gKU-eM-7Tj"/>
                                         </constraints>
                                     </view>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xea-eC-7XY" userLabel="Admin Tools">
+                                        <rect key="frame" x="332" y="4" width="35" height="35"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="35" id="9jk-hY-Cxt"/>
+                                            <constraint firstAttribute="height" constant="35" id="hyi-ln-48Z"/>
+                                        </constraints>
+                                        <state key="normal" image="settings"/>
+                                        <connections>
+                                            <action selector="adminToolsAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xDE-qO-g3B"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="nVq-Od-r1h" firstAttribute="centerX" secondItem="REk-vL-RjA" secondAttribute="centerX" id="0L6-Vo-Ixo"/>
@@ -88,8 +99,10 @@
                                     <constraint firstAttribute="trailing" secondItem="ulS-29-GUb" secondAttribute="trailing" constant="4" id="V70-Mk-JMI"/>
                                     <constraint firstItem="MgJ-at-jzL" firstAttribute="top" secondItem="REk-vL-RjA" secondAttribute="top" constant="4" id="Wlj-4P-CU3"/>
                                     <constraint firstItem="Irf-LE-nMq" firstAttribute="top" secondItem="ulS-29-GUb" secondAttribute="bottom" constant="4" id="d0y-vp-iF1"/>
+                                    <constraint firstItem="ulS-29-GUb" firstAttribute="leading" secondItem="xea-eC-7XY" secondAttribute="trailing" constant="8" id="fWs-dm-vyf"/>
                                     <constraint firstItem="bP7-tZ-Zdu" firstAttribute="leading" secondItem="REk-vL-RjA" secondAttribute="leading" id="jub-V2-SO1"/>
                                     <constraint firstItem="ulS-29-GUb" firstAttribute="top" secondItem="REk-vL-RjA" secondAttribute="top" constant="4" id="kay-ND-5ON"/>
+                                    <constraint firstItem="xea-eC-7XY" firstAttribute="top" secondItem="REk-vL-RjA" secondAttribute="top" constant="4" id="m8S-r3-gdq"/>
                                     <constraint firstItem="YR7-fh-qqW" firstAttribute="leading" secondItem="REk-vL-RjA" secondAttribute="leading" constant="8" id="mHi-ZU-mIE"/>
                                     <constraint firstItem="bP7-tZ-Zdu" firstAttribute="top" secondItem="Irf-LE-nMq" secondAttribute="bottom" constant="8" id="oPQ-0U-K3i"/>
                                     <constraint firstAttribute="trailing" secondItem="Irf-LE-nMq" secondAttribute="trailing" constant="8" id="q2S-L1-YbE"/>
@@ -431,6 +444,7 @@
                     </view>
                     <size key="freeformSize" width="414" height="1300"/>
                     <connections>
+                        <outlet property="adminToolsButton" destination="xea-eC-7XY" id="S0A-z1-PTs"/>
                         <outlet property="categoriesButton" destination="Irf-LE-nMq" id="UV4-H0-Tsy"/>
                         <outlet property="contentTableView" destination="NC1-Mq-cIB" id="fwU-bF-1aY"/>
                         <outlet property="createPostButton" destination="ulS-29-GUb" id="pyQ-Iz-I1b"/>
@@ -1428,11 +1442,54 @@
             </objects>
             <point key="canvasLocation" x="2836" y="70"/>
         </scene>
+        <!--Admin Tools View Controller-->
+        <scene sceneID="CML-r4-Xi5">
+            <objects>
+                <viewController storyboardIdentifier="AdminToolsViewController" id="Vix-bk-2cb" customClass="AdminToolsViewController" customModule="Tulip" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="7jN-Xl-gdm">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="1300"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KRu-rl-9Un">
+                                <rect key="frame" x="97.5" y="52" width="219" height="30"/>
+                                <state key="normal" title="Notify users of server downtime"/>
+                                <connections>
+                                    <action selector="notifyUsersOfServerDowntimeAction:" destination="Vix-bk-2cb" eventType="touchUpInside" id="8h3-E4-rDJ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fTl-Gn-6LI">
+                                <rect key="frame" x="8" y="52" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="35" id="3ex-h5-joO"/>
+                                    <constraint firstAttribute="height" constant="35" id="XJm-6E-ivR"/>
+                                </constraints>
+                                <state key="normal" image="back"/>
+                                <connections>
+                                    <action selector="backButtonAction:" destination="Vix-bk-2cb" eventType="touchUpInside" id="SI0-eS-Rb4"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="fTl-Gn-6LI" firstAttribute="top" secondItem="HdG-lz-ycU" secondAttribute="top" constant="8" id="8OP-1h-tq3"/>
+                            <constraint firstItem="fTl-Gn-6LI" firstAttribute="leading" secondItem="HdG-lz-ycU" secondAttribute="leading" constant="8" id="9tN-Le-bOG"/>
+                            <constraint firstItem="KRu-rl-9Un" firstAttribute="centerX" secondItem="7jN-Xl-gdm" secondAttribute="centerX" id="Lp5-uC-SxN"/>
+                            <constraint firstItem="KRu-rl-9Un" firstAttribute="top" secondItem="HdG-lz-ycU" secondAttribute="top" constant="8" id="Uvy-UY-zms"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="HdG-lz-ycU"/>
+                    </view>
+                    <size key="freeformSize" width="414" height="1300"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CPe-3m-mrL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3507" y="69"/>
+        </scene>
     </scenes>
     <resources>
         <image name="back" width="96" height="96"/>
         <image name="forward" width="1024" height="1024"/>
         <image name="plus_icon" width="1024" height="1024"/>
         <image name="profile" width="720" height="720"/>
+        <image name="settings" width="512" height="512"/>
     </resources>
 </document>

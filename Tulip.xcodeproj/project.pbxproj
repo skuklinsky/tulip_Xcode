@@ -14,6 +14,7 @@
 		245F743B247F2D9100D1E27D /* CustomProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245F743A247F2D9100D1E27D /* CustomProgressBar.swift */; };
 		245F743D247F2EFB00D1E27D /* Poast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245F743C247F2EFB00D1E27D /* Poast.swift */; };
 		2474A2762484415200101C97 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2474A2752484415200101C97 /* ProfileViewController.swift */; };
+		2498994D248C62D000EBEC80 /* AdminToolsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2498994C248C62D000EBEC80 /* AdminToolsViewController.swift */; };
 		24AFF594248063580084302C /* CreatePostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF593248063580084302C /* CreatePostViewController.swift */; };
 		24AFF59A2480E5100084302C /* CustomTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF5992480E5100084302C /* CustomTextView.swift */; };
 		24AFF59C2480EA5D0084302C /* SelectPollOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF59B2480EA5D0084302C /* SelectPollOptionsViewController.swift */; };
@@ -55,6 +56,7 @@
 		245F743A247F2D9100D1E27D /* CustomProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomProgressBar.swift; sourceTree = "<group>"; };
 		245F743C247F2EFB00D1E27D /* Poast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Poast.swift; sourceTree = "<group>"; };
 		2474A2752484415200101C97 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		2498994C248C62D000EBEC80 /* AdminToolsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminToolsViewController.swift; sourceTree = "<group>"; };
 		24AFF593248063580084302C /* CreatePostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostViewController.swift; sourceTree = "<group>"; };
 		24AFF5992480E5100084302C /* CustomTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextView.swift; sourceTree = "<group>"; };
 		24AFF59B2480EA5D0084302C /* SelectPollOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPollOptionsViewController.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				24AFF59B2480EA5D0084302C /* SelectPollOptionsViewController.swift */,
 				241A534D248320A20073D0B9 /* ReviewPostViewController.swift */,
 				2474A2752484415200101C97 /* ProfileViewController.swift */,
+				2498994C248C62D000EBEC80 /* AdminToolsViewController.swift */,
 				24EB10EB247DADAB000F55B5 /* MainEntryCell.swift */,
 				245F7438247F07D400D1E27D /* DropDownCell.swift */,
 				241343AD2481E31C0064BBF6 /* SelectPollOptionsCell.swift */,
@@ -303,6 +306,7 @@
 				245F743D247F2EFB00D1E27D /* Poast.swift in Sources */,
 				245F743B247F2D9100D1E27D /* CustomProgressBar.swift in Sources */,
 				241A534E248320A20073D0B9 /* ReviewPostViewController.swift in Sources */,
+				2498994D248C62D000EBEC80 /* AdminToolsViewController.swift in Sources */,
 				24BCC588248305D0005A4DBC /* CustomTableView.swift in Sources */,
 				2474A2762484415200101C97 /* ProfileViewController.swift in Sources */,
 				24AFF59E2480EC480084302C /* CustomTextFieldlPollOptionCell.swift in Sources */,

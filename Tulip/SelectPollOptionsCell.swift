@@ -32,6 +32,21 @@ class SelectPollOptionsCell: UITableViewCell, UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         parentViewController!.addPollOption(option:choosePollOptionTextField.text!)
         tableView?.reloadData()
+        
+        // set height of table view
+        let pollOptionsTableViewHeight = parentViewController!.pollOptionsTableViewRowHeight * CGFloat(global.categoryToOptions[parentViewController!.postCategory]!.count + 1)
+        if (pollOptionsTableViewHeight > parentViewController!.maxPollOptionsTableViewHeight) {
+            // want to show x.5 rows (so user knows to scroll), showing max number while still under height maximum
+            var height = (1.5 * parentViewController!.pollOptionsTableViewRowHeight) + 4.0 // add 4 bc halfway will appear to be less than half bc top margin of 8
+            while (height < parentViewController!.maxPollOptionsTableViewHeight) {
+                height += parentViewController!.pollOptionsTableViewRowHeight
+            }
+            parentViewController!.tableViewHeightConstraint.constant = height - parentViewController!.pollOptionsTableViewRowHeight
+        } else {
+            parentViewController!.tableViewHeightConstraint.constant = pollOptionsTableViewHeight
+        }
+        // height setting complete
+        
         return true
     }
     

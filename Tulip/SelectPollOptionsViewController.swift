@@ -121,7 +121,7 @@ class SelectPollOptionsViewController: UIViewController {
         yourGenderButtonOutlet.setTitle(genderTitle, for: .normal)
         
         // set height of table view
-        let pollOptionsTableViewHeight = pollOptionsTableViewRowHeight * CGFloat(global.categoryToOptions[postCategory]!.count)
+        let pollOptionsTableViewHeight = pollOptionsTableViewRowHeight * CGFloat(global.categoryToOptions[postCategory]!.count + 1)
         if (pollOptionsTableViewHeight > maxPollOptionsTableViewHeight) {
             // want to show x.5 rows (so user knows to scroll), showing max number while still under height maximum
             var height = (1.5 * pollOptionsTableViewRowHeight) + 4.0 // add 4 bc halfway will appear to be less than half bc top margin of 8

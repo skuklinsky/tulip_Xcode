@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var contentTableView: UITableView!
     @IBOutlet weak var dropDownTableView: UITableView!
     
-    @IBOutlet weak var settingsButton: UIButton!
+    @IBOutlet weak var adminToolsButton: UIButton!
     @IBOutlet weak var createPostButton: UIButton!
     @IBOutlet weak var sortByButton: UIButton!
     @IBOutlet weak var categoriesButton: UIButton!
@@ -35,12 +35,18 @@ class ViewController: UIViewController {
     @IBAction func unwindToViewController(segue: UIStoryboardSegue) {
     }
     
+    @IBAction func adminToolsAction(_ sender: Any) {
+        let newScreen = self.storyboard?.instantiateViewController(withIdentifier: "AdminToolsViewController") as! AdminToolsViewController
+        newScreen.modalPresentationStyle = .fullScreen
+        self.present(newScreen, animated: true, completion: nil)
+    }
+    
     @IBAction func profileAction(_ sender: Any) {
         if let _ = global.username {
             global.sendMessage(dictionaryMessage: ["instruction": "getMyPosts", "username": global.username!], vc: self)
         } else {
             createPostOrViewProfile = "viewProfile"
-            loginOrSignup()
+            loginOrSignup(purpose: "viewProfile")
         }
     }
     
@@ -53,7 +59,7 @@ class ViewController: UIViewController {
             self.present(newScreen, animated: true, completion: nil)
         } else {
             createPostOrViewProfile = "createPost"
-            loginOrSignup()
+            loginOrSignup(purpose: "createPost")
         }
     }
     
@@ -111,6 +117,11 @@ class ViewController: UIViewController {
         let clickedBackgroundGesture = UITapGestureRecognizer(target: self, action: #selector(clickedBackgroundAction))
         grayBackgroundView.addGestureRecognizer(clickedBackgroundGesture)
         
+        if (global.username == "admin") {
+            adminToolsButton.isHidden = false
+            adminToolsButton.isEnabled = true
+        }
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -128,8 +139,14 @@ class ViewController: UIViewController {
         global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
     }
     
-    func loginOrSignup() {
-        let alertController = UIAlertController(title: "To make a post or view your profile, you must be logged in.", message: "This allows you to easily access your post history", preferredStyle: .alert)
+    func loginOrSignup(purpose:String) {
+        var message:String = ""
+        if (purpose == "viewProfile") {
+            message = "In order to access your post history, you must be logged in."
+        } else {
+            message = "In order to create a post, you must be logged in. This allows you to easily access your posts later."
+        }
+        let alertController = UIAlertController(title: "Log in or Sign up", message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Log in", style: .default, handler: showLoginAlert))
         alertController.addAction(UIAlertAction(title: "Sign up", style: .default, handler: showSignupAlert))
         alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
@@ -157,7 +174,7 @@ class ViewController: UIViewController {
     }
     
     func showSignupAlert(alert: UIAlertAction) {
-        let alertController = UIAlertController(title: "Create a username and password", message: "Your username will not be visible when you post", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Create a username and password", message: "Your username will not be visible when you post.", preferredStyle: .alert)
         
         alertController.addTextField(configurationHandler: {(textField: UITextField) in
             textField.placeholder = "username"
@@ -290,6 +307,8 @@ extension ViewController: StreamDelegate {
                 handleLoginRequestResponse(dictionary: dictionary)
             case "signupRequestResponse":
                 handleSignupRequestResponse(dictionary: dictionary)
+            case "serverDowntimeExpected":
+                handleServerDowntimeExpected(dictionary: dictionary)
             default:
                 return
             }
@@ -422,6 +441,11 @@ extension ViewController: StreamDelegate {
                 createPostAction(self)
             }
         }
+    }
+    
+    func handleServerDowntimeExpected(dictionary:[String: Any]) {
+        let minutesUntilDowntime = dictionary["minutesUntilDowntime"] as! Int
+        global.showSimpleAlert(title: "Expected Server Downtime", message: "In \(minutesUntilDowntime) minutes, the server will be temporarily unavailable for scheduled maintenance.", vc: self)
     }
 }
 
