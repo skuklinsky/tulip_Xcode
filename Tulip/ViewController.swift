@@ -22,15 +22,14 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var dropDownTableViewHeight: NSLayoutConstraint!
     
-    let dropDownRowHeight:CGFloat = 46.5
-    
     var posts:[Poast] = []
     
+    let dropDownRowHeight:CGFloat = 46.5
     var dropDownButton = "sortBy"
     var sortByCurrentlyCheckedIndex = 0
     var categoriesCurrentlyCheckedIndex = 0
-    
     var createPostOrViewProfile:String = ""
+    var okToAskServerForMorePosts:Bool = true
     
     @IBAction func unwindToViewController(segue: UIStoryboardSegue) {
     }
@@ -117,7 +116,7 @@ class ViewController: UIViewController {
         let clickedBackgroundGesture = UITapGestureRecognizer(target: self, action: #selector(clickedBackgroundAction))
         grayBackgroundView.addGestureRecognizer(clickedBackgroundGesture)
         
-        if (global.username == "admin") {
+        if (global.isAdmin) {
             adminToolsButton.isHidden = false
             adminToolsButton.isEnabled = true
         }
@@ -136,7 +135,15 @@ class ViewController: UIViewController {
     
     //Action
     @objc func contentTableViewRefreshAction() {
-        global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
+        okToAskServerForMorePosts = true
+        let lastPostTimeSubmitted:CLongLong = 0
+        global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "numPostsBeingRequested": global.numPostsPerServerRequest, "numPostsAlreadyLoaded": 0, "lastPostTimePostSubmitted": lastPostTimeSubmitted, "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
+    }
+    
+    func contentTableViewLoadNextNPosts() {
+        let lastPostTimeSubmitted:CLongLong = posts.count > 0 ? posts[posts.count - 1].timePostSubmitted! : 0
+        okToAskServerForMorePosts = false // don't send another request until first is done
+        global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "numPostsBeingRequested": global.numPostsPerServerRequest, "numPostsAlreadyLoaded": posts.count, "lastPostTimePostSubmitted": lastPostTimeSubmitted, "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
     }
     
     func loginOrSignup(purpose:String) {
@@ -217,7 +224,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 return global.categoryOptions.count
             }
         } else if (tableView == contentTableView) {
-            return posts.count // get max possible entries from server
+            return posts.count
         }
         
         return -1
@@ -264,7 +271,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
                 categoriesCurrentlyCheckedIndex = indexPath.row
             }
             
-            if (sortByCurrentlyCheckedIndex != oldSortByIndex || categoriesCurrentlyCheckedIndex != oldCategoriesIndex) {
+            if ((sortByCurrentlyCheckedIndex != oldSortByIndex) || (categoriesCurrentlyCheckedIndex != oldCategoriesIndex)) {
                 contentTableViewRefreshAction()
             }
             
@@ -275,15 +282,31 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             }
         }
     }
+    
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let indices:[Int]? = contentTableView.indexPathsForVisibleRows?.map({$0.row})
+        if let nonOptionalIndices = indices {
+            if (okToAskServerForMorePosts && (nonOptionalIndices.contains(posts.count - 1))) {
+                contentTableViewLoadNextNPosts()
+            }
+        }
+    }
 
 }
 
 extension ViewController: StreamDelegate {
     func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
         if eventCode == .hasBytesAvailable {
-            if let receivedMessage = global.getMessageFromInputStream(inputStream: aStream as! InputStream) {
-                handleReceivedMessage(dictionary: receivedMessage)
+            
+            // wait for full message to come in before trying to read, otherwise can't read partial message
+            let futureTime = DispatchTime.now() + global.waitToReceiveFullMessageDelay
+            DispatchQueue.main.asyncAfter(deadline: futureTime) {
+                if let receivedMessage = global.getMessageFromInputStream(inputStream: aStream as! InputStream) {
+                    self.handleReceivedMessage(dictionary: receivedMessage)
+                }
             }
+            
         } else if (eventCode == .errorOccurred) {
             global.stableConnectionExists = false
             global.networkError(vc: self)
@@ -316,14 +339,13 @@ extension ViewController: StreamDelegate {
     }
     
     func handleGetMainFeedPostsResponse(dictionary:[String: Any]) {
-        var postsAsJsonStrings:[String] = []
+        var postsAsJsonStrings:[String] = [] // postsAsJsonStrings of form: [post1AsJsonString, post2AsJsonString, ...]
     
         if (dictionary["posts"] != nil) {
             postsAsJsonStrings = global.getStringListFromJson(jsonString: dictionary["posts"]! as! String)
         }
         
-        // postsAsJsonStrings of form: [post1AsJsonString, post2AsJsonString, ...]
-        var posts:[Poast] = []
+        var postsToAdd:[Poast] = []
         
         for postAsJsonString in postsAsJsonStrings {
             if let data = postAsJsonString.data(using: .utf8) {
@@ -338,7 +360,19 @@ extension ViewController: StreamDelegate {
                         let gender:String? = postDictionary["gender"] as! String?
                         let posterUsername:String = postDictionary["posterUsername"] as! String
                         let timePostSubmitted:CLongLong = postDictionary["timePostSubmitted"] as! CLongLong
-                        posts.append(Poast(title: title, message: message, votingOptions: votingOptions, correspondingVotes: correspondingVotes, category: category, age: age, gender: gender, posterUsername: posterUsername, timePostSubmitted: timePostSubmitted))
+                        
+                        var postAlreadyInList:Bool = false
+                        for post in self.posts {
+                            if (post.timePostSubmitted! == timePostSubmitted) {
+                                postAlreadyInList = true
+                                break
+                            }
+                        }
+                        
+                        if (!postAlreadyInList) {
+                            postsToAdd.append(Poast(title: title, message: message, votingOptions: votingOptions, correspondingVotes: correspondingVotes, category: category, age: age, gender: gender, posterUsername: posterUsername, timePostSubmitted: timePostSubmitted))
+                        }
+                        
                     } else {
                         print("Could not convert message to type [String: Any]")
                         print("Message received: \(data)")
@@ -348,7 +382,17 @@ extension ViewController: StreamDelegate {
                 }
             }
         }
-        self.posts = posts
+        
+        for post in postsToAdd {
+            posts.append(post)
+        }
+        
+        if (postsToAdd.count < global.numPostsReceivedThresholdForServerBeingOutOfPosts) {
+            okToAskServerForMorePosts = false
+        } else {
+            okToAskServerForMorePosts = true
+        }
+
         contentTableView.reloadData()
         contentTableView.refreshControl?.endRefreshing()
     }

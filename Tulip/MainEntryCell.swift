@@ -80,42 +80,42 @@ class MainEntryCell: UITableViewCell {
     
     
     @IBAction func vo1Clicked(_ sender: Any) {
-        if (global.username == "admin") {
+        if (global.isAdmin) {
             howManyVotesAlert(userVoteIndex: 0)
         } else {
-            userVoted(userVoteIndex: 0, forFirstTime: true, numVotes: 1, isAdmin: false)
+            userVoted(userVoteIndex: 0, forFirstTime: true, numVotes: 1)
         }
     }
     
     @IBAction func vo2Clicked(_ sender: Any) {
-        if (global.username == "admin") {
+        if (global.isAdmin) {
             howManyVotesAlert(userVoteIndex: 1)
         } else {
-            userVoted(userVoteIndex: 1, forFirstTime: true, numVotes: 1, isAdmin: false)
+            userVoted(userVoteIndex: 1, forFirstTime: true, numVotes: 1)
         }
     }
     
     @IBAction func vo3Clicked(_ sender: Any) {
-        if (global.username == "admin") {
+        if (global.isAdmin) {
             howManyVotesAlert(userVoteIndex: 2)
         } else {
-            userVoted(userVoteIndex: 2, forFirstTime: true, numVotes: 1, isAdmin: false)
+            userVoted(userVoteIndex: 2, forFirstTime: true, numVotes: 1)
         }
     }
     
     @IBAction func vo4Clicked(_ sender: Any) {
-        if (global.username == "admin") {
+        if (global.isAdmin) {
             howManyVotesAlert(userVoteIndex: 3)
         } else {
-            userVoted(userVoteIndex: 3, forFirstTime: true, numVotes: 1, isAdmin: false)
+            userVoted(userVoteIndex: 3, forFirstTime: true, numVotes: 1)
         }
     }
     
     @IBAction func vo5Clicked(_ sender: Any) {
-        if (global.username == "admin") {
+        if (global.isAdmin) {
             howManyVotesAlert(userVoteIndex: 4)
         } else {
-            userVoted(userVoteIndex: 4, forFirstTime: true, numVotes: 1, isAdmin: false)
+            userVoted(userVoteIndex: 4, forFirstTime: true, numVotes: 1)
         }
     }
     
@@ -126,12 +126,12 @@ class MainEntryCell: UITableViewCell {
             textField.placeholder = "Number of votes"
         })
         alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
-        alertController.addAction(UIAlertAction(title: "Submit", style: .default, handler: {_ in self.userVoted(userVoteIndex: userVoteIndex, forFirstTime: true, numVotes: Int(alertController.textFields![0].text!)!, isAdmin: true)}))
+        alertController.addAction(UIAlertAction(title: "Submit", style: .default, handler: {_ in self.userVoted(userVoteIndex: userVoteIndex, forFirstTime: true, numVotes: Int(alertController.textFields![0].text!)!)}))
         vc!.present(alertController, animated: true, completion: nil)
     }
     // end for admin only
     
-    func userVoted(userVoteIndex:Int, forFirstTime:Bool, numVotes:Int, isAdmin:Bool) {
+    func userVoted(userVoteIndex:Int, forFirstTime:Bool, numVotes:Int) {
                 
         percentagesArray = []
         
@@ -152,7 +152,7 @@ class MainEntryCell: UITableViewCell {
         }
         totalVotesLabel.text = "Total Votes: \(totalVotes)"
                 
-        if (!isAdmin) { // if admin, can vote again so don't disable
+        if (!global.isAdmin) { // if admin, can vote again so don't disable
             votingOption1.isEnabled = false
             votingOption2.isEnabled = false
             votingOption3.isEnabled = false
@@ -241,8 +241,7 @@ class MainEntryCell: UITableViewCell {
         
         if let votingHistoryDictionary = UserDefaults.standard.dictionary(forKey: "votingHistory") as! [String: Int]? {
             if (votingHistoryDictionary.keys.contains(String(post.timePostSubmitted!))) {
-                let isAdmin = (global.username == "admin")
-                userVoted(userVoteIndex: votingHistoryDictionary[String(post.timePostSubmitted!)]!, forFirstTime: false, numVotes: 1, isAdmin: isAdmin)
+                userVoted(userVoteIndex: votingHistoryDictionary[String(post.timePostSubmitted!)]!, forFirstTime: false, numVotes: 1)
             }
         }
     }

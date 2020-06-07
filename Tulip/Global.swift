@@ -11,6 +11,8 @@ import UIKit
 
 class Global {
     
+    var isAdmin:Bool = false
+    
     var username:String? = UserDefaults.standard.string(forKey: "username")
     
     let pollOptionTrackTintColor:UIColor = UIColor.init(red: 228/255, green: 228/255, blue: 230/255, alpha: 1)
@@ -33,7 +35,10 @@ class Global {
     let maxMessageWords:Int = 500
     let maxNumberPollOptions:Int = 5
     let minNumberPollOptions:Int = 2
-    let dropDownTableViewDisappearDelay = 0.15 // in seconds
+    let dropDownTableViewDisappearDelay:Double = 0.15 // in seconds
+    let waitToReceiveFullMessageDelay:Double = 0.10 // in seconds
+    let numPostsPerServerRequest:Int = 5
+    let numPostsReceivedThresholdForServerBeingOutOfPosts:Int = 2 // need at least this many posts otherwise consider server to be out of posts
     
     var readStream: Unmanaged<CFReadStream>?
     var writeStream: Unmanaged<CFWriteStream>?
@@ -153,6 +158,7 @@ class Global {
                 } catch let error {
                     print("Error reading data")
                     print(error.localizedDescription)
+                    print(message)
                     return nil
                 }
             }
