@@ -29,6 +29,7 @@ class ViewController: UIViewController {
     var sortByCurrentlyCheckedIndex = 0
     var categoriesCurrentlyCheckedIndex = 0
     var createPostOrViewProfile:String = ""
+    var morePostsAvailable:Bool = true
     var okToAskServerForMorePosts:Bool = true
     
     @IBAction func unwindToViewController(segue: UIStoryboardSegue) {
@@ -135,14 +136,25 @@ class ViewController: UIViewController {
     
     //Action
     @objc func contentTableViewRefreshAction() {
-        okToAskServerForMorePosts = true
+        
+        if (!okToAskServerForMorePosts) { // even if no more posts available, allowed to refresh
+            contentTableView.refreshControl?.endRefreshing()
+            return
+        }
+        
+        okToAskServerForMorePosts = false // don't send another request until first is done
         let lastPostTimeSubmitted:CLongLong = 0
         global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "fullRefresh": true, "numPostsBeingRequested": global.numPostsPerServerRequest, "numPostsAlreadyLoaded": 0, "lastPostTimePostSubmitted": lastPostTimeSubmitted, "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
     }
     
     func contentTableViewLoadNextNPosts() {
-        let lastPostTimeSubmitted:CLongLong = posts.count > 0 ? posts[posts.count - 1].timePostSubmitted! : 0
+        
+        if (!morePostsAvailable || !okToAskServerForMorePosts) {
+            return
+        }
+        
         okToAskServerForMorePosts = false // don't send another request until first is done
+        let lastPostTimeSubmitted:CLongLong = posts.count > 0 ? posts[posts.count - 1].timePostSubmitted! : 0
         global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "fullRefresh": false, "numPostsBeingRequested": global.numPostsPerServerRequest, "numPostsAlreadyLoaded": posts.count, "lastPostTimePostSubmitted": lastPostTimeSubmitted, "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
     }
     
@@ -287,7 +299,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let indices:[Int]? = contentTableView.indexPathsForVisibleRows?.map({$0.row})
         if let nonOptionalIndices = indices {
-            if (okToAskServerForMorePosts && (nonOptionalIndices.contains(posts.count - 1))) {
+            if (nonOptionalIndices.contains(posts.count - 1)) { // if last row is in the list of visible rows, reload
                 contentTableViewLoadNextNPosts()
             }
         }
@@ -319,6 +331,7 @@ extension ViewController: StreamDelegate {
             switch (instruction) {
             case "connectionEstablished":
                 global.stableConnectionExists = true
+                okToAskServerForMorePosts = true
                 contentTableView.refreshControl?.endRefreshing()
             case "getMainFeedPostsResponse":
                 handleGetMainFeedPostsResponse(dictionary: dictionary)
@@ -370,7 +383,7 @@ extension ViewController: StreamDelegate {
                             }
                         }
                         
-                        if (!postAlreadyInList) {
+                        if (!postAlreadyInList || fullRefresh) { // if doing a full refresh, set self.posts = [] so always include received posts
                             postsToAdd.append(Poast(title: title, message: message, votingOptions: votingOptions, correspondingVotes: correspondingVotes, category: category, age: age, gender: gender, posterUsername: posterUsername, timePostSubmitted: timePostSubmitted))
                         }
                         
@@ -393,10 +406,12 @@ extension ViewController: StreamDelegate {
         }
         
         if (postsToAdd.count < global.numPostsReceivedThresholdForServerBeingOutOfPosts) {
-            okToAskServerForMorePosts = false
+            morePostsAvailable = false
         } else {
-            okToAskServerForMorePosts = true
+            morePostsAvailable = true
         }
+        
+        okToAskServerForMorePosts = true
         
         contentTableView.reloadData()
         contentTableView.refreshControl?.endRefreshing()

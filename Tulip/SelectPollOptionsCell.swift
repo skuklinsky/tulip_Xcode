@@ -23,6 +23,7 @@ class SelectPollOptionsCell: UITableViewCell, UITextFieldDelegate {
         choosePollOptionTextField.text = cellText
         self.choosePollOptionTextField.delegate = self
         self.rowIndex = rowIndex
+        self.selectionStyle = .none
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
