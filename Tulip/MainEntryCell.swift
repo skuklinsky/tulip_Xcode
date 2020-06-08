@@ -179,6 +179,7 @@ class MainEntryCell: UITableViewCell {
         }
         
         progressBars[indexOfOptionWithMostVotes].progressTintColor = global.pollOptionColorMostVotes
+        
         yourVoteImageViews[userVoteIndex].image = UIImage(named: "profile")
         
     }
@@ -195,6 +196,15 @@ class MainEntryCell: UITableViewCell {
                 
         progressBars = [cpb1, cpb2, cpb3, cpb4, cpb5]
         yourVoteImageViews = [yourVote1, yourVote2, yourVote3, yourVote4, yourVote5]
+        
+        for imView in yourVoteImageViews {
+            imView.image = nil
+        }
+        votingOption1.isEnabled = true
+        votingOption2.isEnabled = true
+        votingOption3.isEnabled = true
+        votingOption4.isEnabled = true
+        votingOption5.isEnabled = true
         
         for numVotesPerOption in post.correspondingVotes {
             totalVotes += numVotesPerOption

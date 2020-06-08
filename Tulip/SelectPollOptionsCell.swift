@@ -17,10 +17,6 @@ class SelectPollOptionsCell: UITableViewCell, UITextFieldDelegate {
     
     @IBOutlet weak var choosePollOptionTextField: CustomTextFieldPollOptionCell!
     
-    @IBAction func choosePollOptionTextFieldEditingDidEnd(_ sender: Any) {
-    
-    }
-    
     func setCell(cellText:String, tableView:UITableView, parentViewController:SelectPollOptionsViewController, rowIndex:Int) {
         self.tableView = tableView
         self.parentViewController = parentViewController
@@ -63,11 +59,9 @@ class SelectPollOptionsCell: UITableViewCell, UITextFieldDelegate {
         if (rowIndex == 0) {
             return
         }
-        
+                
         super.setSelected(selected, animated: animated)
         
-        contentView.backgroundColor = .systemBackground
-
         if selected {
             choosePollOptionTextField.backgroundColor = global.pollOptionColorWhenSelectedAsOption
         } else {

@@ -137,13 +137,13 @@ class ViewController: UIViewController {
     @objc func contentTableViewRefreshAction() {
         okToAskServerForMorePosts = true
         let lastPostTimeSubmitted:CLongLong = 0
-        global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "numPostsBeingRequested": global.numPostsPerServerRequest, "numPostsAlreadyLoaded": 0, "lastPostTimePostSubmitted": lastPostTimeSubmitted, "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
+        global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "fullRefresh": true, "numPostsBeingRequested": global.numPostsPerServerRequest, "numPostsAlreadyLoaded": 0, "lastPostTimePostSubmitted": lastPostTimeSubmitted, "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
     }
     
     func contentTableViewLoadNextNPosts() {
         let lastPostTimeSubmitted:CLongLong = posts.count > 0 ? posts[posts.count - 1].timePostSubmitted! : 0
         okToAskServerForMorePosts = false // don't send another request until first is done
-        global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "numPostsBeingRequested": global.numPostsPerServerRequest, "numPostsAlreadyLoaded": posts.count, "lastPostTimePostSubmitted": lastPostTimeSubmitted, "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
+        global.sendMessage(dictionaryMessage: ["instruction": "getMainFeedPosts", "fullRefresh": false, "numPostsBeingRequested": global.numPostsPerServerRequest, "numPostsAlreadyLoaded": posts.count, "lastPostTimePostSubmitted": lastPostTimeSubmitted, "category": global.categoryOptions[categoriesCurrentlyCheckedIndex], "sortBy": global.sortByOptions[sortByCurrentlyCheckedIndex]], vc: self)
     }
     
     func loginOrSignup(purpose:String) {
@@ -340,6 +340,7 @@ extension ViewController: StreamDelegate {
     
     func handleGetMainFeedPostsResponse(dictionary:[String: Any]) {
         var postsAsJsonStrings:[String] = [] // postsAsJsonStrings of form: [post1AsJsonString, post2AsJsonString, ...]
+        let fullRefresh:Bool = dictionary["fullRefresh"] as! Bool
     
         if (dictionary["posts"] != nil) {
             postsAsJsonStrings = global.getStringListFromJson(jsonString: dictionary["posts"]! as! String)
@@ -383,8 +384,12 @@ extension ViewController: StreamDelegate {
             }
         }
         
+        if (fullRefresh) {
+            self.posts = [] // delete all previous posts in table view if full refresh
+        }
+        
         for post in postsToAdd {
-            posts.append(post)
+            self.posts.append(post)
         }
         
         if (postsToAdd.count < global.numPostsReceivedThresholdForServerBeingOutOfPosts) {
@@ -392,7 +397,7 @@ extension ViewController: StreamDelegate {
         } else {
             okToAskServerForMorePosts = true
         }
-
+        
         contentTableView.reloadData()
         contentTableView.refreshControl?.endRefreshing()
     }

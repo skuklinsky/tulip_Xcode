@@ -41,7 +41,7 @@ class CreatePostViewController: UIViewController {
             global.showSimpleAlert(title: "Messages cannot have more than \(global.maxMessageWords) words", message: "", vc: self)
         } else {
             let newScreen = self.storyboard?.instantiateViewController(withIdentifier: "SelectPollOptionsViewController") as! SelectPollOptionsViewController
-            newScreen.postCategory = global.categoryOptions[currentlyCheckedIndex]
+            newScreen.postCategory = global.categoryOptions[currentlyCheckedIndex + 1]
             newScreen.postTitle = titleTextView.text
             newScreen.postMessage = messageTextView.text
             newScreen.modalPresentationStyle = .fullScreen
@@ -54,7 +54,7 @@ class CreatePostViewController: UIViewController {
             dropDownTableView.isHidden = true
             grayBackgroundView.alpha = 0
         } else {
-            dropDownTableViewHeightConstraint.constant = dropDownRowHeight * CGFloat(global.categoryOptions.count)
+            dropDownTableViewHeightConstraint.constant = dropDownRowHeight * CGFloat(global.categoryOptions.count - 1)
             dropDownTableView.reloadData()
             dropDownTableView.isHidden = false
             grayBackgroundView.alpha = global.grayBackgroundAlpha
@@ -112,13 +112,13 @@ class CreatePostViewController: UIViewController {
 extension CreatePostViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return global.categoryOptions.count
+        return global.categoryOptions.count - 1 // don't show "All" category
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:DropDownCell = dropDownTableView.dequeueReusableCell(withIdentifier: "ChooseCategoryCreatePostCell") as! DropDownCell
         
-        let name = global.categoryOptions[indexPath.row]
+        let name = global.categoryOptions[indexPath.row + 1] // don't show "All" category
         let isChecked = (currentlyCheckedIndex == indexPath.row)
         cell.setCellChooseCategoryCreatePost(cellText: name, isChecked: isChecked)
         return cell
@@ -129,7 +129,7 @@ extension CreatePostViewController: UITableViewDelegate, UITableViewDataSource {
         currentlyCheckedIndex = indexPath.row
         
         UIView.performWithoutAnimation {
-            selectCategoryOutlet.setTitle(global.categoryOptions[currentlyCheckedIndex] + " ▼", for: .normal)
+            selectCategoryOutlet.setTitle(global.categoryOptions[currentlyCheckedIndex + 1] + " ▼", for: .normal)
             selectCategoryOutlet.layoutIfNeeded()
         }
         

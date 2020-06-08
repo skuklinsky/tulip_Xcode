@@ -21,6 +21,5 @@ class CustomTextView: UITextView {
         self.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         self.layer.borderWidth = 0.5
         self.clipsToBounds = true
-        self.backgroundColor = .systemBackground
     }
 }
