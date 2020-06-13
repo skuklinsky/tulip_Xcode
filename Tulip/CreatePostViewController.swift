@@ -18,6 +18,8 @@ class CreatePostViewController: UIViewController {
     @IBOutlet weak var dropDownTableViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var selectCategoryOutlet: UIButton!
     @IBOutlet weak var selectPollOptionsLabel: UILabel!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var bottomMessageTVToBottomContentViewConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var grayBackgroundView: UIView!
     
@@ -64,10 +66,19 @@ class CreatePostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Add notification for when keyboard is shown
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        // End add notification
+        
+        scrollView.delegate = self
+        
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard))
-        
-        tap.cancelsTouchesInView = false 
-        
+        tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
         
         dropDownTableView.delegate = self
@@ -75,6 +86,9 @@ class CreatePostViewController: UIViewController {
                 
         titleTextView.delegate = self
         messageTextView.delegate = self
+        
+        titleTextView.setContentOffset(.zero, animated: false)
+        messageTextView.setContentOffset(.zero, animated: false)
         
         titleCharacterCount.text = "0 / \(global.maxTitleChars) Characters"
         messageWordCount.text = "0 / \(global.maxMessageWords) Words"
@@ -84,6 +98,15 @@ class CreatePostViewController: UIViewController {
         
         let clickedBackgroundGesture = UITapGestureRecognizer(target: self, action: #selector(clickedBackgroundAction))
         grayBackgroundView.addGestureRecognizer(clickedBackgroundGesture)
+                
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if (scrollView == self.scrollView) {
+            titleTextView.resignFirstResponder()
+            messageTextView.resignFirstResponder()
+        }
     }
     
     @objc func dismissKeyboard() {
@@ -106,7 +129,33 @@ class CreatePostViewController: UIViewController {
         dropDownTableView.isHidden = true
         grayBackgroundView.alpha = 0
     }
-
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+            
+            // want distance to bottom of screen to be keyboardHeight, but it's being constrained to something 43 above the bottom, so the distance is 43 less
+            bottomMessageTVToBottomContentViewConstraint.constant = keyboardHeight - 43 + 8 // margin of 8
+            
+            if (messageTextView.isFirstResponder) {
+                let futureTime = DispatchTime.now() + 0.05
+                DispatchQueue.main.asyncAfter(deadline: futureTime) {
+                    let bottomOffset = CGPoint(x: 0, y: self.scrollView.contentSize.height - self.scrollView.bounds.size.height)
+                    
+                    self.scrollView.delegate = nil // don't trigger scrollView didScroll, don't resign first responder here
+                    self.scrollView.setContentOffset(bottomOffset, animated: true)
+                    
+                    let futureTime = DispatchTime.now() + 1.0 // wait for animation to end before enabling delegate again
+                    DispatchQueue.main.asyncAfter(deadline: futureTime) {
+                        self.scrollView.delegate = self
+                    }
+                    
+                }
+            }
+        }
+    }
+    
 }
 
 extension CreatePostViewController: UITableViewDelegate, UITableViewDataSource {
@@ -146,6 +195,7 @@ extension CreatePostViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension CreatePostViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) { //Handle the text changes here
+
         if (textView == titleTextView) {
             if let numChars = titleTextView.text?.count {
                 titleCharacterCount.text = "\(numChars) / \(global.maxTitleChars) Characters"

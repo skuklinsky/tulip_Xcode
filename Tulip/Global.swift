@@ -24,7 +24,7 @@ class Global {
     let grayBackgroundAlpha:CGFloat = 0.35
     
     let categoryOptions:[String] = ["All", "Is he interested", "Is she interested", "Should I break up with her"]
-    let sortByOptions:[String] = ["Popular", "New"]
+    let sortByOptions:[String] = ["New", "Popular"]
     
     let categoryToOptions:[String:[String]] = ["All": ["All 1", "All 2", "All 3", "All 4", "All 5", "All 6", "All 7", "All 8"], "Is he interested":["IHE 1", "IHE 2", "IHE 3", "IHE 4", "IHE 5"], "Is she interested": ["ISE 1", "ISE 2", "ISE 3", "ISE 4", "ISE 5"], "Should I break up with her": ["SIBUWH 1", "SIBUWH 2", "SIBUWH 3", "SIBUWH 4", "SIBUWH 5"]]
     
@@ -36,9 +36,9 @@ class Global {
     let maxNumberPollOptions:Int = 5
     let minNumberPollOptions:Int = 2
     let dropDownTableViewDisappearDelay:Double = 0.15 // in seconds
-    let waitToReceiveFullMessageDelay:Double = 0.10 // in seconds
+    let waitToReceiveFullMessageDelay:Double = 0.30 // in seconds
     let numPostsPerServerRequest:Int = 5
-    let numPostsReceivedThresholdForServerBeingOutOfPosts:Int = 2 // need at least this many posts otherwise consider server to be out of posts
+    let numPostsReceivedThresholdForServerBeingOutOfPosts:Int = 3 // need at least this many posts otherwise consider server to be out of posts
     
     var readStream: Unmanaged<CFReadStream>?
     var writeStream: Unmanaged<CFWriteStream>?
@@ -46,7 +46,7 @@ class Global {
     var outputStream: OutputStream!
     let IPAddress:CFString = "18.222.70.0" as CFString
     let PORT:UInt32 = 16042
-    let CONNECTION_TIMEOUT_THRESHOLD = DispatchTimeInterval.seconds(5) // seconds
+    let CONNECTION_TIMEOUT_THRESHOLD = DispatchTimeInterval.seconds(2) // seconds
     var stableConnectionExists:Bool = false
     var numberReceivedMessages = 0
     
@@ -96,20 +96,12 @@ class Global {
         }
         // finish replacing
         
-        
-        let futureTime = DispatchTime.now() + global.CONNECTION_TIMEOUT_THRESHOLD
-        let currentNumMessages = global.numberReceivedMessages
-        DispatchQueue.main.asyncAfter(deadline: futureTime) {
-            if global.numberReceivedMessages <= currentNumMessages {
-                global.stableConnectionExists = false
-                global.networkError(vc: vc)
-            }
-        }
+        //messageWithNormalizedQuotes["instruction"] = "ñ 🤑test with wierd chards"
         
         if let theJSONData = try? JSONSerialization.data(withJSONObject: messageWithNormalizedQuotes, options: []) {
             if let theJSONText = String(data: theJSONData, encoding: .utf8) {
                 
-                let msgLengthAsInt:Int32 = Int32(theJSONText.count)
+                let msgLengthAsInt:Int32 = Int32(theJSONText.lengthOfBytes(using: .utf8))
                 let msgLengthAsBytes = withUnsafeBytes(of: msgLengthAsInt.bigEndian) { Data($0) }
                 
                 let msgAsBytes = theJSONText.data(using: .utf8)!
@@ -122,6 +114,15 @@ class Global {
                     }
                     outputStream.write(pointer, maxLength: data.count)
                     print("Message sent with instruction: " + (messageWithNormalizedQuotes["instruction"]! as! String))
+                    
+                    let futureTime = DispatchTime.now() + global.CONNECTION_TIMEOUT_THRESHOLD
+                    let currentNumMessages = global.numberReceivedMessages
+                    DispatchQueue.main.asyncAfter(deadline: futureTime) {
+                        if global.numberReceivedMessages <= currentNumMessages {
+                            global.stableConnectionExists = false
+                            global.networkError(vc: vc)
+                        }
+                    }
                 }
             }
         }
@@ -129,23 +130,26 @@ class Global {
     
     func getMessageFromInputStream(inputStream:InputStream) -> [String:Any]? {
         
+        global.numberReceivedMessages += 1
+        
         let bufferForMessageSize = UnsafeMutablePointer<UInt8>.allocate(capacity: 4)
         inputStream.read(bufferForMessageSize, maxLength: 4)
-
-        //let messageSize:Int32 = Int32((bufferForMessageSize[0] << 24) | (bufferForMessageSize[1] << 16) | (bufferForMessageSize[2] << 8) | (bufferForMessageSize[3]))
-        //let intMessageSize = Int(messageSize)
         
         let a:Int = Int(bufferForMessageSize[0]) * Int(pow(2.0, 24.0))
         let b:Int = Int(bufferForMessageSize[1]) * Int(pow(2.0, 16.0))
         let c:Int = Int(bufferForMessageSize[2]) * Int(pow(2.0, 8.0))
         let d:Int = Int(bufferForMessageSize[3])
         let intMessageSize = a + b + c + d
-
+        
+        bufferForMessageSize.deallocate()
+        
         let bufferForMessage = UnsafeMutablePointer<UInt8>.allocate(capacity: intMessageSize)
         inputStream.read(bufferForMessage, maxLength: intMessageSize)
         
-        if let message = String(bytesNoCopy: bufferForMessage, length: intMessageSize, encoding: .utf8, freeWhenDone: true) {
-            global.numberReceivedMessages += 1
+        if let message = String(bytesNoCopy: bufferForMessage, length: intMessageSize, encoding: .utf8, freeWhenDone: false) {
+            
+            bufferForMessage.deallocate()
+            
             if let data = message.data(using: .utf8) {
                 do {
                     if let rv = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
@@ -162,6 +166,8 @@ class Global {
                     return nil
                 }
             }
+        } else {
+            bufferForMessage.deallocate()
         }
         return nil
     }

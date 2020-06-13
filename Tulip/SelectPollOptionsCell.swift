@@ -28,7 +28,21 @@ class SelectPollOptionsCell: UITableViewCell, UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         parentViewController!.addPollOption(option:choosePollOptionTextField.text!)
+        
+        let selectedIndexPaths = tableView?.indexPathsForSelectedRows
+        var newSelectedIndexPaths:[IndexPath] = [IndexPath(row: 1, section: 0)]
+        
+        if let forcedSelectedIndexPaths = selectedIndexPaths {
+            for selectedIndexPath in forcedSelectedIndexPaths {
+                newSelectedIndexPaths.append(IndexPath(row: selectedIndexPath.row + 1, section: 0))
+            }
+        }
+        
         tableView?.reloadData()
+        
+        for newSelectedIndexPath in newSelectedIndexPaths {
+            tableView?.selectRow(at: newSelectedIndexPath, animated: false, scrollPosition: .none)
+        }
         
         // set height of table view
         let pollOptionsTableViewHeight = parentViewController!.pollOptionsTableViewRowHeight * CGFloat(global.categoryToOptions[parentViewController!.postCategory]!.count + 1)

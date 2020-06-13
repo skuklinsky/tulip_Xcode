@@ -99,6 +99,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        UserDefaults.standard.set(false, forKey: "didResignActive") // launched new instance of app, reset resigning status
+        
         global.setupNetworkCommunication(vc: self)
         contentTableViewRefreshAction()
         
@@ -320,9 +322,15 @@ extension ViewController: StreamDelegate {
             }
             
         } else if (eventCode == .errorOccurred) {
-            global.stableConnectionExists = false
-            global.networkError(vc: self)
+            if (UserDefaults.standard.bool(forKey: "didResignActive")) { // if resigned active, don't show "Try again" message, just try to reconnect stealthily
+                global.setupNetworkCommunication(vc: self)
+            } else {
+                global.stableConnectionExists = false
+                global.networkError(vc: self)
+            }
         }
+        
+        UserDefaults.standard.set(false, forKey: "didResignActive") // reset resign active status so if get socket error from here on, show "Try again" message
     }
     
     func handleReceivedMessage(dictionary:[String:Any]) {
@@ -415,6 +423,11 @@ extension ViewController: StreamDelegate {
         
         contentTableView.reloadData()
         contentTableView.refreshControl?.endRefreshing()
+        
+        if (self.posts.count > 0 && fullRefresh) {
+            let topIndex = IndexPath(row: 0, section: 0)
+            contentTableView.scrollToRow(at: topIndex, at: .top, animated: true)
+        }
     }
     
     func handleGetMyPostsResponse(dictionary:[String: Any]) {

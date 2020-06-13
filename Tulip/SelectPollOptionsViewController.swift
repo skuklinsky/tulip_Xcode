@@ -119,7 +119,7 @@ class SelectPollOptionsViewController: UIViewController {
         yourAgeButtonOutlet.setTitle(ageTitle, for: .normal)
         let genderTitle = currentlyCheckedYourGenderIndex == 0 ? "Your Gender ▼": global.yourGenderOptions[currentlyCheckedYourGenderIndex] + " ▼"
         yourGenderButtonOutlet.setTitle(genderTitle, for: .normal)
-        
+                
         // set height of table view
         let pollOptionsTableViewHeight = pollOptionsTableViewRowHeight * CGFloat(global.categoryToOptions[postCategory]!.count + 1)
         if (pollOptionsTableViewHeight > maxPollOptionsTableViewHeight) {
@@ -139,6 +139,10 @@ class SelectPollOptionsViewController: UIViewController {
         
         let clickedBackgroundGesture = UITapGestureRecognizer(target: self, action: #selector(clickedBackgroundAction))
         grayBackgroundView.addGestureRecognizer(clickedBackgroundGesture)
+        
+        let tapAnywhere = UITapGestureRecognizer(target: self, action:#selector(endEditing))
+        tapAnywhere.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapAnywhere)
     }
     
     //Action
@@ -150,6 +154,29 @@ class SelectPollOptionsViewController: UIViewController {
     @objc func clickedBackgroundAction() {
         dropDownTableView.isHidden = true
         grayBackgroundView.alpha = 0
+    }
+    
+    //Action
+    @objc func endEditing() {
+        /* changed mind - don't want to add row when end editing, only when hit 'enter'
+        if let cell = pollOptionsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) {
+            let firstCell = cell as! SelectPollOptionsCell
+            
+            if (firstCell.choosePollOptionTextField.isFirstResponder) {
+                if let numChars = firstCell.choosePollOptionTextField.text?.count {
+                    if (numChars > 0) {
+                        let _ = firstCell.textFieldShouldReturn(firstCell.choosePollOptionTextField)
+                    } else {
+                        firstCell.choosePollOptionTextField.endEditing(true)
+                        firstCell.choosePollOptionTextField.text = "Add poll option"
+                    }
+                } else {
+                    firstCell.choosePollOptionTextField.endEditing(true)
+                    firstCell.choosePollOptionTextField.text = "Add poll option"
+                }
+            }
+        }
+ */
     }
 
 }

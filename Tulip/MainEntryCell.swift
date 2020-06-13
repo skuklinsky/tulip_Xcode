@@ -68,6 +68,11 @@ class MainEntryCell: UITableViewCell {
     @IBOutlet weak var cellMessageProfileHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var totalVotesLabelProfile: UILabel!
     
+    let msInOneMinute:CLongLong = 60000
+    let msInOneHour:CLongLong = 3600000
+    let msInOneDay:CLongLong = 86400000
+    let msInOneYear:CLongLong = 31536000000
+    
     var vc:ViewController? = nil
     
     var progressBars:[CustomProgressBar] = []
@@ -199,6 +204,7 @@ class MainEntryCell: UITableViewCell {
         
         for imView in yourVoteImageViews {
             imView.image = nil
+            imView.isHidden = false
         }
         votingOption1.isEnabled = true
         votingOption2.isEnabled = true
@@ -217,7 +223,12 @@ class MainEntryCell: UITableViewCell {
         
         self.cellTitle.text = post.title
         self.cellMessage.text = post.message
-        self.ageGenderLabel.text = (post.gender == nil) ? nil: post.gender! + ", " + post.age!
+        
+        let timeStampText:String = getTimestampText(post: post)
+        let ageGenderLabelText = (post.gender == nil) ? timeStampText: post.gender! + ", " + post.age! + " " + timeStampText
+        let attributedText = NSMutableAttributedString(string: ageGenderLabelText)
+        attributedText.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 14.0), range: NSRange(location: ageGenderLabelText.count - (timeStampText.count), length: timeStampText.count))
+        self.ageGenderLabel.attributedText = attributedText
         
         votingOption1.setTitle(post.votingOptions[0], for: .normal)
         votingOption2.setTitle(post.votingOptions[1], for: .normal)
@@ -227,6 +238,8 @@ class MainEntryCell: UITableViewCell {
         if (post.votingOptions.count >= 3) {
             votingOption3.setTitle(post.votingOptions[2], for: .normal)
             cpb3.progress = 0
+            cpb3.isHidden = false
+            votingOption3.isHidden = false
         } else {
             votingOption3.isHidden = true
             cpb3.isHidden = true
@@ -235,6 +248,8 @@ class MainEntryCell: UITableViewCell {
         if (post.votingOptions.count >= 4) {
             votingOption4.setTitle(post.votingOptions[3], for: .normal)
             cpb4.progress = 0
+            cpb4.isHidden = false
+            votingOption4.isHidden = false
         } else {
             votingOption4.isHidden = true
             cpb4.isHidden = true
@@ -243,6 +258,8 @@ class MainEntryCell: UITableViewCell {
         if (post.votingOptions.count >= 5) {
             votingOption5.setTitle(post.votingOptions[4], for: .normal)
             cpb5.progress = 0
+            cpb5.isHidden = false
+            votingOption5.isHidden = false
         } else {
             votingOption5.isHidden = true
             cpb5.isHidden = true
@@ -381,6 +398,20 @@ class MainEntryCell: UITableViewCell {
         tableView!.beginUpdates()
         cellMessageProfileHeightConstraint.constant = 2000
         tableView!.endUpdates()
+    }
+    
+    func getTimestampText(post:Poast) -> String {
+        let msSinceSubmitted = CLongLong(Date().timeIntervalSince1970 * 1000) - post.timePostSubmitted!
+        if (msSinceSubmitted < msInOneHour) { // less than an hour ago
+            return "· " + String(msSinceSubmitted / msInOneMinute) + "m"
+        } else if (msSinceSubmitted < msInOneDay) { // less than a day ago
+            return "· " + String(msSinceSubmitted / msInOneHour) + "h"
+        } else if (msSinceSubmitted < msInOneYear) { // less than a year ago
+            return "· " + String(msSinceSubmitted / msInOneDay) + "d"
+        } else {
+            return "· " + String(msSinceSubmitted / msInOneYear) + "y"
+        }
+        
     }
 
 }
