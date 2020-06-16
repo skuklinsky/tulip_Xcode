@@ -225,7 +225,7 @@ class MainEntryCell: UITableViewCell {
         self.cellMessage.text = post.message
         
         let timeStampText:String = getTimestampText(post: post)
-        let ageGenderLabelText = (post.gender == nil) ? timeStampText: post.gender! + ", " + post.age! + " " + timeStampText
+        let ageGenderLabelText = (post.gender == nil) ? timeStampText: post.gender! + " · " + post.age! + " · " + timeStampText
         let attributedText = NSMutableAttributedString(string: ageGenderLabelText)
         attributedText.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 14.0), range: NSRange(location: ageGenderLabelText.count - (timeStampText.count), length: timeStampText.count))
         self.ageGenderLabel.attributedText = attributedText
@@ -403,13 +403,13 @@ class MainEntryCell: UITableViewCell {
     func getTimestampText(post:Poast) -> String {
         let msSinceSubmitted = CLongLong(Date().timeIntervalSince1970 * 1000) - post.timePostSubmitted!
         if (msSinceSubmitted < msInOneHour) { // less than an hour ago
-            return "· " + String(msSinceSubmitted / msInOneMinute) + "m"
+            return String(msSinceSubmitted / msInOneMinute) + "m"
         } else if (msSinceSubmitted < msInOneDay) { // less than a day ago
-            return "· " + String(msSinceSubmitted / msInOneHour) + "h"
+            return String(msSinceSubmitted / msInOneHour) + "h"
         } else if (msSinceSubmitted < msInOneYear) { // less than a year ago
-            return "· " + String(msSinceSubmitted / msInOneDay) + "d"
+            return String(msSinceSubmitted / msInOneDay) + "d"
         } else {
-            return "· " + String(msSinceSubmitted / msInOneYear) + "y"
+            return String(msSinceSubmitted / msInOneYear) + "y"
         }
         
     }

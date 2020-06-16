@@ -311,8 +311,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension ViewController: StreamDelegate {
     func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
-        if eventCode == .hasBytesAvailable {
-            
+        if (eventCode == .hasBytesAvailable) {
             // wait for full message to come in before trying to read, otherwise can't read partial message
             let futureTime = DispatchTime.now() + global.waitToReceiveFullMessageDelay
             DispatchQueue.main.asyncAfter(deadline: futureTime) {
@@ -322,15 +321,17 @@ extension ViewController: StreamDelegate {
             }
             
         } else if (eventCode == .errorOccurred) {
-            if (UserDefaults.standard.bool(forKey: "didResignActive")) { // if resigned active, don't show "Try again" message, just try to reconnect stealthily
+            
+            if (UserDefaults.standard.bool(forKey: "didResignActive")) { // if resigned active, don't show "Try again" message
+                
+                UserDefaults.standard.set(false, forKey: "didResignActive") // reset resign active status
                 global.setupNetworkCommunication(vc: self)
             } else {
                 global.stableConnectionExists = false
                 global.networkError(vc: self)
             }
+            
         }
-        
-        UserDefaults.standard.set(false, forKey: "didResignActive") // reset resign active status so if get socket error from here on, show "Try again" message
     }
     
     func handleReceivedMessage(dictionary:[String:Any]) {

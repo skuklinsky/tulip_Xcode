@@ -73,8 +73,15 @@ extension ReviewPostViewController: StreamDelegate {
                 handleReceivedMessage(dictionary: receivedMessage)
             }
         } else if (eventCode == .errorOccurred) {
-            global.stableConnectionExists = false
-            global.networkError(vc: self)
+            
+            if (UserDefaults.standard.bool(forKey: "didResignActive")) { // if resigned active, don't show "Try again" message
+                
+                UserDefaults.standard.set(false, forKey: "didResignActive") // reset resign active status
+                global.setupNetworkCommunication(vc: self)
+            } else {
+                global.stableConnectionExists = false
+                global.networkError(vc: self)
+            }
         }
     }
     
