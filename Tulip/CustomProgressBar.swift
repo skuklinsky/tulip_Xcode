@@ -20,5 +20,9 @@ class CustomProgressBar: UIProgressView {
         self.layer.cornerRadius = 14.0
         self.layer.masksToBounds = true
         self.trackTintColor = global.pollOptionTrackTintColor
+        
+        // Set the rounded edge for the inner bar
+        self.layer.sublayers![1].cornerRadius = 14
+        self.subviews[1].clipsToBounds = true
     }
 }

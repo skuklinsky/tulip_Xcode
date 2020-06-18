@@ -16,17 +16,17 @@ class Global {
     var username:String? = UserDefaults.standard.string(forKey: "username")
     
     let pollOptionTrackTintColor:UIColor = UIColor.init(red: 228/255, green: 228/255, blue: 230/255, alpha: 1)
-    let pollOptionColorDefault = UIColor.init(red: 15/255, green: 203/255, blue: 255/255, alpha: 1)
-    let pollOptionColorMostVotes = UIColor.init(red: 15/255, green: 203/255, blue: 255/255, alpha: 1)
+    let pollOptionColorDefault = UIColor.init(red: 14/255, green: 175/255, blue: 245/255, alpha: 1)
+    let pollOptionColorMostVotes = UIColor.init(red: 14/255, green: 175/255, blue: 245/255, alpha: 1)
     let pollOptionColorWhenSelectedAsOption:UIColor = UIColor.init(red: 180/255, green: 180/255, blue: 180/255, alpha: 1)
     let dropDownCellBackgroundColor:UIColor = UIColor.init(red: 15/255, green: 203/255, blue: 255/255, alpha: 1)
     let wentOverCharacterOrWordLimitColor:UIColor = UIColor.red
     let grayBackgroundAlpha:CGFloat = 0.35
     
-    let categoryOptions:[String] = ["All", "Is he interested", "Is she interested", "Should I break up with her"]
+    let categoryOptions:[String] = ["All", "Are they interested?", "Relationships", "Hookups/FWB", "Exes", "Friends & Family", "Misc."]
     let sortByOptions:[String] = ["New", "Popular"]
     
-    let categoryToOptions:[String:[String]] = ["All": ["All 1", "All 2", "All 3", "All 4", "All 5", "All 6", "All 7", "All 8"], "Is he interested":["IHE 1", "IHE 2", "IHE 3", "IHE 4", "IHE 5"], "Is she interested": ["ISE 1", "ISE 2", "ISE 3", "ISE 4", "ISE 5"], "Should I break up with her": ["SIBUWH 1", "SIBUWH 2", "SIBUWH 3", "SIBUWH 4", "SIBUWH 5"]]
+    let pollOptions:[String] = ["Yes", "Probably", "Maybe", "Probably not", "No"]
     
     let yourAgeOptions:[String] = ["No selection", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "64", "65", "66", "67", "68", "69", "70", "71", "72", "73", "74", "75", "76", "77", "78", "79", "80", "81", "82", "83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94", "95", "96", "97", "98", "99+"]
     let yourGenderOptions:[String] = ["No selection", "Male", "Female", "Non-binary"]

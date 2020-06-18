@@ -17,10 +17,10 @@ class SelectPollOptionsCell: UITableViewCell, UITextFieldDelegate {
     
     @IBOutlet weak var choosePollOptionTextField: CustomTextFieldPollOptionCell!
     
-    func setCell(cellText:String, tableView:UITableView, parentViewController:SelectPollOptionsViewController, rowIndex:Int) {
+    func setCell(cellText:NSMutableAttributedString, tableView:UITableView, parentViewController:SelectPollOptionsViewController, rowIndex:Int) {
         self.tableView = tableView
         self.parentViewController = parentViewController
-        choosePollOptionTextField.text = cellText
+        choosePollOptionTextField.attributedText = cellText
         self.choosePollOptionTextField.delegate = self
         self.rowIndex = rowIndex
         self.selectionStyle = .none
@@ -45,7 +45,7 @@ class SelectPollOptionsCell: UITableViewCell, UITextFieldDelegate {
         }
         
         // set height of table view
-        let pollOptionsTableViewHeight = parentViewController!.pollOptionsTableViewRowHeight * CGFloat(global.categoryToOptions[parentViewController!.postCategory]!.count + 1)
+        let pollOptionsTableViewHeight = parentViewController!.pollOptionsTableViewRowHeight * CGFloat(global.pollOptions.count + 1)
         if (pollOptionsTableViewHeight > parentViewController!.maxPollOptionsTableViewHeight) {
             // want to show x.5 rows (so user knows to scroll), showing max number while still under height maximum
             var height = (1.5 * parentViewController!.pollOptionsTableViewRowHeight) + 4.0 // add 4 bc halfway will appear to be less than half bc top margin of 8
@@ -62,7 +62,13 @@ class SelectPollOptionsCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        textField.text = ""
+        let name = "Add poll option"
+        let attributedText = NSMutableAttributedString(string: name)
+        attributedText.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 14.0), range: NSRange(location: 0, length: name.count))
+        
+        if (textField.text == "Add poll option") {
+            textField.text = nil
+        }
     }
     
     func setEditable(isEditable:Bool) {
@@ -82,6 +88,9 @@ class SelectPollOptionsCell: UITableViewCell, UITextFieldDelegate {
         } else {
             choosePollOptionTextField.backgroundColor = global.pollOptionTrackTintColor
         }
+    }
+    
+    @IBAction func textFieldEditingChanged(_ sender: Any) {
     }
     
 }

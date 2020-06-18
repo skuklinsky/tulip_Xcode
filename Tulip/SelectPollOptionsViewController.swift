@@ -58,7 +58,7 @@ class SelectPollOptionsViewController: UIViewController {
                 if (indexPath.row <= pollOptionsAdded.count) {
                     votingOptions.append(pollOptionsAdded[indexPath.row - 1])
                 } else {
-                    votingOptions.append(global.categoryToOptions[postCategory]![indexPath.row - pollOptionsAdded.count - 1])
+                    votingOptions.append(global.pollOptions[indexPath.row - pollOptionsAdded.count - 1])
                 }
             }
             let correspondingVotes = votingOptions.map({_ in 0})
@@ -121,7 +121,7 @@ class SelectPollOptionsViewController: UIViewController {
         yourGenderButtonOutlet.setTitle(genderTitle, for: .normal)
                 
         // set height of table view
-        let pollOptionsTableViewHeight = pollOptionsTableViewRowHeight * CGFloat(global.categoryToOptions[postCategory]!.count + 1)
+        let pollOptionsTableViewHeight = pollOptionsTableViewRowHeight * CGFloat(global.pollOptions.count + 1)
         if (pollOptionsTableViewHeight > maxPollOptionsTableViewHeight) {
             // want to show x.5 rows (so user knows to scroll), showing max number while still under height maximum
             var height = (1.5 * pollOptionsTableViewRowHeight) + 4.0 // add 4 bc halfway will appear to be less than half bc top margin of 8
@@ -158,25 +158,19 @@ class SelectPollOptionsViewController: UIViewController {
     
     //Action
     @objc func endEditing() {
-        /* changed mind - don't want to add row when end editing, only when hit 'enter'
-        if let cell = pollOptionsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) {
-            let firstCell = cell as! SelectPollOptionsCell
+        if let cell:SelectPollOptionsCell = pollOptionsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? SelectPollOptionsCell {
+            let text:String = cell.choosePollOptionTextField.text ?? ""
+            cell.choosePollOptionTextField.resignFirstResponder()
             
-            if (firstCell.choosePollOptionTextField.isFirstResponder) {
-                if let numChars = firstCell.choosePollOptionTextField.text?.count {
-                    if (numChars > 0) {
-                        let _ = firstCell.textFieldShouldReturn(firstCell.choosePollOptionTextField)
-                    } else {
-                        firstCell.choosePollOptionTextField.endEditing(true)
-                        firstCell.choosePollOptionTextField.text = "Add poll option"
-                    }
-                } else {
-                    firstCell.choosePollOptionTextField.endEditing(true)
-                    firstCell.choosePollOptionTextField.text = "Add poll option"
-                }
+            if (text.count == 0) {
+                let name = "Add poll option"
+                let attributedText = NSMutableAttributedString(string: name)
+                attributedText.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 14.0), range: NSRange(location: 0, length: name.count))
+                cell.choosePollOptionTextField.attributedText = attributedText
+            } else {
+                cell.choosePollOptionTextField.text = text
             }
         }
- */
     }
 
 }
@@ -185,7 +179,7 @@ extension SelectPollOptionsViewController: UITableViewDelegate, UITableViewDataS
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if (tableView == pollOptionsTableView) {
-            return global.categoryToOptions[postCategory]!.count + pollOptionsAdded.count + 1
+            return global.pollOptions.count + pollOptionsAdded.count + 1
         } else if (tableView == dropDownTableView) {
             if (currentDropDown == "yourAge") {
                 return global.yourAgeOptions.count
@@ -205,15 +199,21 @@ extension SelectPollOptionsViewController: UITableViewDelegate, UITableViewDataS
             let cell:SelectPollOptionsCell = pollOptionsTableView.dequeueReusableCell(withIdentifier: "SelectPollOptionsCell") as! SelectPollOptionsCell
             
             var name:String? = nil
+            var attributedString:NSMutableAttributedString? = nil
             if (indexPath.row == 0) {
                 name = "Add poll option"
+                let attributedText = NSMutableAttributedString(string: name!)
+                attributedText.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 14.0), range: NSRange(location: 0, length: name!.count))
+                attributedString = attributedText
             } else if (indexPath.row < pollOptionsAdded.count + 1) {
                 name = pollOptionsAdded[indexPath.row - 1]
+                attributedString = NSMutableAttributedString(string: name!)
             } else {
-                name = global.categoryToOptions[postCategory]![indexPath.row - pollOptionsAdded.count - 1]
+                name = global.pollOptions[indexPath.row - pollOptionsAdded.count - 1]
+                attributedString = NSMutableAttributedString(string: name!)
             }
             
-            cell.setCell(cellText: name!, tableView: pollOptionsTableView, parentViewController: self, rowIndex: indexPath.row)
+            cell.setCell(cellText: attributedString!, tableView: pollOptionsTableView, parentViewController: self, rowIndex: indexPath.row)
             cell.setEditable(isEditable: (indexPath.row == 0))
             return cell
         } else if (tableView == dropDownTableView) {

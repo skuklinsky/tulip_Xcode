@@ -185,7 +185,7 @@ class MainEntryCell: UITableViewCell {
         
         progressBars[indexOfOptionWithMostVotes].progressTintColor = global.pollOptionColorMostVotes
         
-        yourVoteImageViews[userVoteIndex].image = UIImage(named: "profile")
+        yourVoteImageViews[userVoteIndex].image = UIImage(named: "profile_orange")
         
     }
     

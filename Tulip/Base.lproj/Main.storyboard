@@ -22,7 +22,7 @@
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tulip" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nVq-Od-r1h" userLabel="App Name Label">
                                         <rect key="frame" x="174.5" y="0.0" width="65" height="54.5"/>
                                         <fontDescription key="fontDescription" name="Noteworthy-Bold" family="Noteworthy" pointSize="34"/>
-                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="textColor" red="0.054901960784313725" green="0.68627450980392157" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ulS-29-GUb">
@@ -31,7 +31,7 @@
                                             <constraint firstAttribute="width" constant="35" id="2o5-EU-w5f"/>
                                             <constraint firstAttribute="height" constant="35" id="MeV-JS-5Mv"/>
                                         </constraints>
-                                        <state key="normal" backgroundImage="plus_icon"/>
+                                        <state key="normal" backgroundImage="plus_icon_green"/>
                                         <connections>
                                             <action selector="createPostAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="apD-6W-rtD"/>
                                         </connections>
@@ -42,7 +42,7 @@
                                             <constraint firstAttribute="width" constant="35" id="C1Y-FC-Y9p"/>
                                             <constraint firstAttribute="height" constant="35" id="eMc-xx-apx"/>
                                         </constraints>
-                                        <state key="normal" backgroundImage="profile"/>
+                                        <state key="normal" backgroundImage="profile_green"/>
                                         <connections>
                                             <action selector="profileAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wyk-ez-CGm"/>
                                         </connections>
@@ -54,7 +54,9 @@
                                             <constraint firstAttribute="width" constant="110" id="WkN-7w-R7m"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                        <state key="normal" title="Categories ▼"/>
+                                        <state key="normal" title="Categories ▼">
+                                            <color key="titleColor" red="0.054901960780000002" green="0.68627450980000004" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        </state>
                                         <connections>
                                             <action selector="categoriesClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gv5-6w-pLW"/>
                                         </connections>
@@ -66,7 +68,9 @@
                                             <constraint firstAttribute="height" constant="20" id="INo-Lj-Ike"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                        <state key="normal" title="Sort-By ▼"/>
+                                        <state key="normal" title="Sort-By ▼">
+                                            <color key="titleColor" red="0.054901960780000002" green="0.68627450980000004" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        </state>
                                         <connections>
                                             <action selector="sortByClicked:" destination="BYZ-38-t0r" eventType="touchUpInside" id="23d-d8-qlO"/>
                                         </connections>
@@ -495,7 +499,7 @@
                                     <constraint firstAttribute="height" constant="35" id="egB-eD-06g"/>
                                     <constraint firstAttribute="width" constant="35" id="no6-45-r8k"/>
                                 </constraints>
-                                <state key="normal" backgroundImage="back"/>
+                                <state key="normal" backgroundImage="back_blue"/>
                                 <connections>
                                     <action selector="backButtonAction:" destination="Eu6-BE-2IE" eventType="touchUpInside" id="QwC-w7-PFM"/>
                                 </connections>
@@ -506,7 +510,7 @@
                                     <constraint firstAttribute="height" constant="35" id="i9N-Ja-Nxa"/>
                                     <constraint firstAttribute="width" constant="35" id="nop-EH-e5p"/>
                                 </constraints>
-                                <state key="normal" backgroundImage="forward"/>
+                                <state key="normal" backgroundImage="forward_blue"/>
                                 <connections>
                                     <action selector="nextButtonAction:" destination="Eu6-BE-2IE" eventType="touchUpInside" id="6Zz-b8-i94"/>
                                 </connections>
@@ -526,7 +530,9 @@
                                                             <constraint firstAttribute="height" constant="30" id="Kcg-vA-6lz"/>
                                                         </constraints>
                                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                        <state key="normal" title="Select a Category ▼"/>
+                                                        <state key="normal" title="Select a Category ▼">
+                                                            <color key="titleColor" red="0.054901960780000002" green="0.68627450980000004" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                        </state>
                                                         <connections>
                                                             <action selector="selectCategoryAction:" destination="Eu6-BE-2IE" eventType="touchUpInside" id="MBK-rR-V7U"/>
                                                         </connections>
@@ -557,7 +563,7 @@
                                                             <constraint firstAttribute="height" constant="100" id="kpW-Da-Z3B"/>
                                                         </constraints>
                                                         <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                     </textView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DiY-Jk-oXC" userLabel="Message Label">
@@ -586,7 +592,7 @@
                                                             <constraint firstAttribute="height" constant="250" id="GoY-RX-k9f"/>
                                                         </constraints>
                                                         <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                     </textView>
                                                 </subviews>
@@ -752,7 +758,7 @@
                                     <constraint firstAttribute="width" constant="35" id="5VH-io-HXc"/>
                                     <constraint firstAttribute="height" constant="35" id="zEc-7S-CaI"/>
                                 </constraints>
-                                <state key="normal" backgroundImage="back"/>
+                                <state key="normal" backgroundImage="back_blue"/>
                                 <connections>
                                     <action selector="backButtonAction:" destination="rl4-yM-ELQ" eventType="touchUpInside" id="YQ8-Ld-xoZ"/>
                                 </connections>
@@ -773,7 +779,7 @@
                                     <constraint firstAttribute="width" constant="35" id="FGi-1e-qnb"/>
                                     <constraint firstAttribute="height" constant="35" id="WZG-Wq-UIR"/>
                                 </constraints>
-                                <state key="normal" backgroundImage="forward"/>
+                                <state key="normal" backgroundImage="forward_blue"/>
                                 <connections>
                                     <action selector="nextButtonAction:" destination="rl4-yM-ELQ" eventType="touchUpInside" id="Xkm-jw-lGq"/>
                                 </connections>
@@ -799,6 +805,9 @@
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                                    <connections>
+                                                        <action selector="textFieldEditingChanged:" destination="8MO-IL-kvG" eventType="editingChanged" id="fky-jY-Afe"/>
+                                                    </connections>
                                                 </textField>
                                             </subviews>
                                             <constraints>
@@ -820,7 +829,9 @@
                                     <constraint firstAttribute="height" constant="20" id="fRK-TT-oAM"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <state key="normal" title="Your Age ▼"/>
+                                <state key="normal" title="Your Age ▼">
+                                    <color key="titleColor" red="0.054901960780000002" green="0.68627450980000004" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                </state>
                                 <connections>
                                     <action selector="yourAgeAction:" destination="rl4-yM-ELQ" eventType="touchUpInside" id="nBa-ha-Kj6"/>
                                 </connections>
@@ -831,7 +842,9 @@
                                     <constraint firstAttribute="height" constant="20" id="MnX-FK-MXh"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <state key="normal" title="Your Gender ▼"/>
+                                <state key="normal" title="Your Gender ▼">
+                                    <color key="titleColor" red="0.054901960780000002" green="0.68627450980000004" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                </state>
                                 <connections>
                                     <action selector="yourGenderAction:" destination="rl4-yM-ELQ" eventType="touchUpInside" id="lSP-z2-hQJ"/>
                                 </connections>
@@ -958,7 +971,7 @@
                                     <constraint firstAttribute="height" constant="35" id="S9A-Co-VW3"/>
                                     <constraint firstAttribute="width" constant="35" id="XO2-58-ZgM"/>
                                 </constraints>
-                                <state key="normal" backgroundImage="back"/>
+                                <state key="normal" backgroundImage="back_blue"/>
                                 <connections>
                                     <action selector="backButtonAction:" destination="C6s-yc-MAO" eventType="touchUpInside" id="hWR-3t-UsB"/>
                                 </connections>
@@ -1162,7 +1175,7 @@
                                     <constraint firstAttribute="height" constant="35" id="2Vx-78-5hH"/>
                                     <constraint firstAttribute="width" constant="35" id="PLp-xh-Big"/>
                                 </constraints>
-                                <state key="normal" backgroundImage="forward"/>
+                                <state key="normal" backgroundImage="forward_blue"/>
                                 <connections>
                                     <action selector="nextButtonAction:" destination="C6s-yc-MAO" eventType="touchUpInside" id="w7T-xe-Pfe"/>
                                 </connections>
@@ -1430,7 +1443,7 @@
                                     <constraint firstAttribute="height" constant="35" id="M3j-ti-NPd"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fkz-zX-vhd" userLabel="Back Button">
@@ -1439,7 +1452,7 @@
                                     <constraint firstAttribute="height" constant="35" id="5xt-E6-Yx1"/>
                                     <constraint firstAttribute="width" constant="35" id="tpc-Xp-KpD"/>
                                 </constraints>
-                                <state key="normal" backgroundImage="back"/>
+                                <state key="normal" backgroundImage="back_blue"/>
                                 <connections>
                                     <action selector="backButtonAction:" destination="r6s-G7-Uav" eventType="touchUpInside" id="dc6-nS-Mb9"/>
                                 </connections>
@@ -1451,7 +1464,9 @@
                                     <constraint firstAttribute="height" constant="35" id="YV4-Y6-Cjj"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <state key="normal" title="Log Out"/>
+                                <state key="normal" title="Log Out">
+                                    <color key="titleColor" red="0.054901960780000002" green="0.68627450980000004" blue="0.96078431369999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                </state>
                                 <connections>
                                     <action selector="logOutAction:" destination="r6s-G7-Uav" eventType="touchUpInside" id="C0j-UY-9LR"/>
                                 </connections>
@@ -1503,7 +1518,7 @@
                                     <constraint firstAttribute="width" constant="35" id="3ex-h5-joO"/>
                                     <constraint firstAttribute="height" constant="35" id="XJm-6E-ivR"/>
                                 </constraints>
-                                <state key="normal" image="back"/>
+                                <state key="normal" image="back_blue"/>
                                 <connections>
                                     <action selector="backButtonAction:" destination="Vix-bk-2cb" eventType="touchUpInside" id="SI0-eS-Rb4"/>
                                 </connections>
@@ -1526,10 +1541,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="back" width="96" height="96"/>
-        <image name="forward" width="1024" height="1024"/>
-        <image name="plus_icon" width="1024" height="1024"/>
-        <image name="profile" width="720" height="720"/>
+        <image name="back_blue" width="96" height="96"/>
+        <image name="forward_blue" width="1024" height="1024"/>
+        <image name="plus_icon_green" width="1024" height="1024"/>
+        <image name="profile_green" width="720" height="720"/>
         <image name="settings" width="512" height="512"/>
     </resources>
 </document>
