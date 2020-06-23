@@ -15,6 +15,7 @@
 		245F743D247F2EFB00D1E27D /* Poast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245F743C247F2EFB00D1E27D /* Poast.swift */; };
 		2474A2762484415200101C97 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2474A2752484415200101C97 /* ProfileViewController.swift */; };
 		2498994D248C62D000EBEC80 /* AdminToolsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2498994C248C62D000EBEC80 /* AdminToolsViewController.swift */; };
+		249ECDE324A1AE1700ED0731 /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249ECDE224A1AE1700ED0731 /* CustomButton.swift */; };
 		24AFF594248063580084302C /* CreatePostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF593248063580084302C /* CreatePostViewController.swift */; };
 		24AFF59A2480E5100084302C /* CustomTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF5992480E5100084302C /* CustomTextView.swift */; };
 		24AFF59C2480EA5D0084302C /* SelectPollOptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24AFF59B2480EA5D0084302C /* SelectPollOptionsViewController.swift */; };
@@ -57,6 +58,7 @@
 		245F743C247F2EFB00D1E27D /* Poast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Poast.swift; sourceTree = "<group>"; };
 		2474A2752484415200101C97 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		2498994C248C62D000EBEC80 /* AdminToolsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminToolsViewController.swift; sourceTree = "<group>"; };
+		249ECDE224A1AE1700ED0731 /* CustomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		24AFF593248063580084302C /* CreatePostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostViewController.swift; sourceTree = "<group>"; };
 		24AFF5992480E5100084302C /* CustomTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextView.swift; sourceTree = "<group>"; };
 		24AFF59B2480EA5D0084302C /* SelectPollOptionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPollOptionsViewController.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 				24AFF5992480E5100084302C /* CustomTextView.swift */,
 				24BCC587248305D0005A4DBC /* CustomTableView.swift */,
 				24AFF59D2480EC480084302C /* CustomTextFieldlPollOptionCell.swift */,
+				249ECDE224A1AE1700ED0731 /* CustomButton.swift */,
 				245F743C247F2EFB00D1E27D /* Poast.swift */,
 				24EB10BF247DAAE6000F55B5 /* Main.storyboard */,
 				241343AB2481DE9C0064BBF6 /* Global.swift */,
@@ -303,6 +306,7 @@
 			files = (
 				24AFF59C2480EA5D0084302C /* SelectPollOptionsViewController.swift in Sources */,
 				245F7439247F07D400D1E27D /* DropDownCell.swift in Sources */,
+				249ECDE324A1AE1700ED0731 /* CustomButton.swift in Sources */,
 				245F743D247F2EFB00D1E27D /* Poast.swift in Sources */,
 				245F743B247F2D9100D1E27D /* CustomProgressBar.swift in Sources */,
 				241A534E248320A20073D0B9 /* ReviewPostViewController.swift in Sources */,
@@ -491,7 +495,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = XVX2FKBW5B;
 				INFOPLIST_FILE = Tulip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -511,7 +515,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = XVX2FKBW5B;
 				INFOPLIST_FILE = Tulip/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;

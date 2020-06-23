@@ -37,7 +37,7 @@ class Global {
     let minNumberPollOptions:Int = 2
     let dropDownTableViewDisappearDelay:Double = 0.15 // in seconds
     let waitToReceiveFullMessageDelay:Double = 0.30 // in seconds
-    let numPostsPerServerRequest:Int = 5
+    let numPostsPerServerRequest:Int = 15
     let numPostsReceivedThresholdForServerBeingOutOfPosts:Int = 3 // need at least this many posts otherwise consider server to be out of posts
     
     var readStream: Unmanaged<CFReadStream>?
@@ -46,7 +46,7 @@ class Global {
     var outputStream: OutputStream!
     let IPAddress:CFString = "18.222.70.0" as CFString
     let PORT:UInt32 = 16042
-    let CONNECTION_TIMEOUT_THRESHOLD = DispatchTimeInterval.seconds(2) // seconds
+    let CONNECTION_TIMEOUT_THRESHOLD = DispatchTimeInterval.seconds(5) // seconds
     var stableConnectionExists:Bool = false
     var numberReceivedMessages = 0
     

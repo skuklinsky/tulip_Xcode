@@ -53,7 +53,7 @@ extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:MainEntryCell = contentTableView.dequeueReusableCell(withIdentifier: "MainEntryCellProfile") as! MainEntryCell
-        cell.setCellProfile(post: posts[indexPath.row], tableView: contentTableView)
+        cell.setCellProfile(post: posts[indexPath.row], tableView: contentTableView, vc: self)
         return cell
     }
     

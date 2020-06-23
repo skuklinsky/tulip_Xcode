@@ -93,6 +93,14 @@ extension ReviewPostViewController: StreamDelegate {
                 global.stableConnectionExists = true
             case "successfullySubmittedPost":
                 handleSubmittedPostSuccessfully()
+            case "youAreBlockedFromPosting":
+                handleYouAreBlockedFromPosting()
+            case "successfullyDeletedPost":
+                break
+            case "successfullyBlockedPoster":
+                break
+            case "successfullyMarkedReportedPostAsOk":
+                break
             default:
                 return
             }
@@ -101,5 +109,10 @@ extension ReviewPostViewController: StreamDelegate {
     
     func handleSubmittedPostSuccessfully() {
         self.performSegue(withIdentifier: "unwindFromReviewPostToViewController", sender: self)
+    }
+    
+    func handleYouAreBlockedFromPosting() {
+        global.showSimpleAlert(title: "You have been blocked from posting", message: "One or more of your previous posts are in violation of the Terms of Use. You may not post anymore.", vc: self)
+        UserDefaults.standard.set(true, forKey: "bannedFromPosting")
     }
 }

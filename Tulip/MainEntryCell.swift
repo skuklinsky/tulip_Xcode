@@ -36,6 +36,10 @@ class MainEntryCell: UITableViewCell {
     @IBOutlet weak var totalVotesLabel: UILabel!
     @IBOutlet weak var cellMessageHeightConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var menuButton: UIButton!
+    @IBOutlet weak var reportPostButton: UIButton!
+    @IBOutlet weak var blockUserButton: UIButton!
+    
     
     @IBOutlet weak var ageGenderLabelReviewPost: UILabel!
     @IBOutlet weak var cellTitleReviewPost: UILabel!
@@ -74,6 +78,7 @@ class MainEntryCell: UITableViewCell {
     let msInOneYear:CLongLong = 31536000000
     
     var vc:ViewController? = nil
+    var profileVC:ProfileViewController? = nil
     
     var progressBars:[CustomProgressBar] = []
     var yourVoteImageViews:[UIImageView] = []
@@ -82,7 +87,41 @@ class MainEntryCell: UITableViewCell {
     var post:Poast? = nil
     var tableView:UITableView? = nil
     var indexOfOptionWithMostVotes = -1
+
+
+    @IBAction func menuAction(_ sender: Any) {
+        reportPostButton.isHidden = !reportPostButton.isHidden
+        blockUserButton.isHidden = !blockUserButton.isHidden
+    }
+    @IBAction func reportPostAction(_ sender: Any) {
+        reportPostButton.isEnabled = false
+        
+        var postsAlreadyReported:[CLongLong] = (UserDefaults.standard.array(forKey: "postsAlreadyReported") ?? []) as [CLongLong]
+        postsAlreadyReported.append(post!.timePostSubmitted!)
+        UserDefaults.standard.set(postsAlreadyReported, forKey: "postsAlreadyReported")
+        
+        vc?.showToast(message: "Post reported", font: .systemFont(ofSize: 12))
+        
+        if let p = post {
+            global.sendMessage(dictionaryMessage: ["instruction": "reportPost", "timePostSubmitted": p.timePostSubmitted!], vc: vc!)
+        }
+    }
+    @IBAction func blockUserAction(_ sender: Any) {
+        blockUserButton.isEnabled = false
+        
+        var usersAlreadyBlocked:[String] = (UserDefaults.standard.array(forKey: "usersAlreadyBlocked") ?? []) as! [String]
+        usersAlreadyBlocked.append(post!.posterUsername)
+        UserDefaults.standard.set(usersAlreadyBlocked, forKey: "usersAlreadyBlocked")
+        
+        vc?.showToast(message: "User blocked", font: .systemFont(ofSize: 12))
+  
+    }
     
+    @IBAction func adminProfileVO1Clicked(_ sender: Any) {
+        if (global.isAdmin) {
+            handleReportedPostAlert()
+        }
+    }
     
     @IBAction func vo1Clicked(_ sender: Any) {
         if (global.isAdmin) {
@@ -133,6 +172,25 @@ class MainEntryCell: UITableViewCell {
         alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         alertController.addAction(UIAlertAction(title: "Submit", style: .default, handler: {_ in self.userVoted(userVoteIndex: userVoteIndex, forFirstTime: true, numVotes: Int(alertController.textFields![0].text!)!)}))
         vc!.present(alertController, animated: true, completion: nil)
+    }
+    
+    func handleReportedPostAlert() {
+        let alertController = UIAlertController(title: "Handle reported post", message: "", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "Delete post", style: .default, handler: {_ in self.deletePost()}))
+        alertController.addAction(UIAlertAction(title: "Block user", style: .default, handler: {_ in self.blockPoster()}))
+        alertController.addAction(UIAlertAction(title: "Post is Ok", style: .default, handler: {_ in self.postIsOk()}))
+        self.profileVC!.present(alertController, animated: true, completion: nil)
+    }
+    
+    func deletePost() {
+        global.sendMessage(dictionaryMessage: ["instruction": "deletePost", "timePostSubmitted": post!.timePostSubmitted!], vc: self.profileVC!)
+    }
+    func blockPoster() {
+        global.sendMessage(dictionaryMessage: ["instruction": "blockPoster", "timePostSubmitted": post!.timePostSubmitted!], vc: self.profileVC!)
+    }
+    func postIsOk() {
+        global.sendMessage(dictionaryMessage: ["instruction": "reportedPostIsOk", "timePostSubmitted": post!.timePostSubmitted!], vc: self.profileVC!)
     }
     // end for admin only
     
@@ -195,6 +253,10 @@ class MainEntryCell: UITableViewCell {
         self.tableView = tableView
         self.vc = vc
         self.totalVotes = 0
+        self.menuButton.isHidden = false
+        
+        reportPostButton.isEnabled = !(((UserDefaults.standard.array(forKey: "postsAlreadyReported") ?? []) as! [CLongLong]).contains(post.timePostSubmitted!))
+        blockUserButton.isEnabled = !(((UserDefaults.standard.array(forKey: "usersAlreadyBlocked") ?? []) as! [String]).contains(post.posterUsername))
         
         let messageLabelTapped = UITapGestureRecognizer(target: self, action: #selector(messageLabelTappedAction))
         cellMessage.addGestureRecognizer(messageLabelTapped)
@@ -312,9 +374,11 @@ class MainEntryCell: UITableViewCell {
         
     }
     
-    func setCellProfile(post:Poast, tableView:UITableView) {
+    func setCellProfile(post:Poast, tableView:UITableView, vc:ProfileViewController) {
         self.tableView = tableView
         self.totalVotes = 0
+        self.profileVC = vc
+        self.post = post
         
         self.cellTitleProfile.sizeToFit()
         self.cellMessageProfile.sizeToFit()

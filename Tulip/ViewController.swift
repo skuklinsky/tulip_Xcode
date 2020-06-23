@@ -17,7 +17,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var createPostButton: UIButton!
     @IBOutlet weak var sortByButton: UIButton!
     @IBOutlet weak var categoriesButton: UIButton!
-    
     @IBOutlet weak var grayBackgroundView: UIView!
     
     @IBOutlet weak var dropDownTableViewHeight: NSLayoutConstraint!
@@ -42,16 +41,26 @@ class ViewController: UIViewController {
     }
     
     @IBAction func profileAction(_ sender: Any) {
-        if let _ = global.username {
-            global.sendMessage(dictionaryMessage: ["instruction": "getMyPosts", "username": global.username!], vc: self)
+        
+        if (global.isAdmin) {
+            global.sendMessage(dictionaryMessage: ["instruction": "getReportedPosts"], vc: self)
         } else {
-            createPostOrViewProfile = "viewProfile"
-            loginOrSignup(purpose: "viewProfile")
+            if let _ = global.username {
+                global.sendMessage(dictionaryMessage: ["instruction": "getMyPosts", "username": global.username!], vc: self)
+            } else {
+                createPostOrViewProfile = "viewProfile"
+                loginOrSignup(purpose: "viewProfile")
+            }
         }
     }
     
     
     @IBAction func createPostAction(_ sender: Any) {
+        
+        if (UserDefaults.standard.bool(forKey: "bannedFromPosting")) {
+            global.showSimpleAlert(title: "You have been blocked from posting", message: "One or more of your previous posts are in violation of the Terms of Use. You may not post anymore.", vc: self)
+            return
+        }
         
         if let _ = global.username {
             let newScreen = self.storyboard?.instantiateViewController(withIdentifier: "CreatePostViewController") as! CreatePostViewController
@@ -103,6 +112,8 @@ class ViewController: UIViewController {
         
         global.setupNetworkCommunication(vc: self)
         contentTableViewRefreshAction()
+        
+        global.isAdmin = false
         
         contentTableView.delegate = self
         contentTableView.dataSource = self
@@ -195,7 +206,8 @@ class ViewController: UIViewController {
     }
     
     func showSignupAlert(alert: UIAlertAction) {
-        let alertController = UIAlertController(title: "Create a username and password", message: "Your username will not be visible when you post.", preferredStyle: .alert)
+        
+        let alertController = UIAlertController(title: "Create a username and password", message: "By signing up you agree to our Terms of Use.", preferredStyle: .alert)
         
         alertController.addTextField(configurationHandler: {(textField: UITextField) in
             textField.placeholder = "username"
@@ -206,10 +218,11 @@ class ViewController: UIViewController {
             textField.addTarget(self, action: #selector(self.textChanged), for: .editingChanged)
         })
         
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
         alertController.addAction(UIAlertAction(title: "Sign up", style: .default, handler: {(alert: UIAlertAction!) in self.sendSignupRequestToServer(alert: alert, username: alertController.textFields![0].text!, password: alertController.textFields![1].text!)}))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .default, handler: nil))
+        alertController.addAction(UIAlertAction(title: "View Terms of Use", style: .default, handler: {(alert: UIAlertAction!) in self.viewTermsOfUse(alert: alert)}))
         
-        alertController.actions[1].isEnabled = false
+        alertController.actions[0].isEnabled = false
         
         self.present(alertController, animated: true, completion: nil)
     }
@@ -222,6 +235,11 @@ class ViewController: UIViewController {
     func sendSignupRequestToServer(alert: UIAlertAction, username:String, password:String) {
         let dictionaryToSend:[String: Any] = ["instruction": "signupRequest", "username": username, "password": password]
         global.sendMessage(dictionaryMessage: dictionaryToSend, vc: self)
+    }
+    
+    func viewTermsOfUse(alert: UIAlertAction) {
+        guard let url = URL(string: "http://referencedev.000webhostapp.com/terms_of_use/tulip/") else { return }
+        UIApplication.shared.open(url)
     }
 
 
@@ -354,6 +372,10 @@ extension ViewController: StreamDelegate {
                 handleSignupRequestResponse(dictionary: dictionary)
             case "serverDowntimeExpected":
                 handleServerDowntimeExpected(dictionary: dictionary)
+            case "successfullyReportedPost":
+                break
+            case "getReportedPostsResponse":
+                handleGetReportedPostsResponse(dictionary: dictionary)
             default:
                 return
             }
@@ -392,7 +414,9 @@ extension ViewController: StreamDelegate {
                             }
                         }
                         
-                        if (!postAlreadyInList || fullRefresh) { // if doing a full refresh, set self.posts = [] so always include received posts
+                        let usersBlocked:[String] = (UserDefaults.standard.array(forKey: "usersAlreadyBlocked") ?? []) as! [String]
+                    
+                        if ((!postAlreadyInList || fullRefresh) && !(usersBlocked.contains(posterUsername))) { // if doing a full refresh, set self.posts = [] so always include received posts
                             postsToAdd.append(Poast(title: title, message: message, votingOptions: votingOptions, correspondingVotes: correspondingVotes, category: category, age: age, gender: gender, posterUsername: posterUsername, timePostSubmitted: timePostSubmitted))
                         }
                         
@@ -470,6 +494,52 @@ extension ViewController: StreamDelegate {
         newScreen.modalPresentationStyle = .fullScreen
         self.present(newScreen, animated: true, completion: nil)
     }
+    
+    func handleGetReportedPostsResponse(dictionary:[String:Any]) {
+        let numReports:[Int] = global.getIntListFromJson(jsonString: dictionary["numReports"] as! String)
+        
+        var postsAsJsonStrings:[String] = []
+        
+        if (dictionary["posts"] != nil) {
+            postsAsJsonStrings = global.getStringListFromJson(jsonString: dictionary["posts"]! as! String)
+        }
+        
+        // postsAsJsonStrings of form: [post1AsJsonString, post2AsJsonString, ...]
+        var posts:[Poast] = []
+        
+        var index:Int = 0
+        for postAsJsonString in postsAsJsonStrings {
+            if let data = postAsJsonString.data(using: .utf8) {
+                do {
+                    if let postDictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+                        let posterUsername:String = postDictionary["posterUsername"] as! String
+                        var title:String = postDictionary["title"] as! String
+                        title = String(numReports[index]) + " reports - " + title
+                        var message:String = postDictionary["message"] as! String
+                        message = posterUsername + " - " + message
+                        let votingOptions:[String] = global.getStringListFromJson(jsonString: postDictionary["votingOptions"] as! String)
+                        let correspondingVotes:[Int] = global.getIntListFromJson(jsonString: postDictionary["correspondingVotes"] as! String)
+                        let category:String = postDictionary["category"] as! String
+                        let age:String? = postDictionary["age"] as! String?
+                        let gender:String? = postDictionary["gender"] as! String?
+                        let timePostSubmitted:CLongLong = postDictionary["timePostSubmitted"] as! CLongLong
+                        posts.append(Poast(title: title, message: message, votingOptions: votingOptions, correspondingVotes: correspondingVotes, category: category, age: age, gender: gender, posterUsername: posterUsername, timePostSubmitted: timePostSubmitted))
+                    } else {
+                        print("Could not convert message to type [String: Any]")
+                        print("Message received: \(data)")
+                    }
+                } catch let error {
+                    print(error.localizedDescription)
+                }
+            }
+            index += 1
+        }
+        
+        let newScreen = self.storyboard?.instantiateViewController(withIdentifier: "ProfileViewController") as! ProfileViewController
+        newScreen.posts = posts
+        newScreen.modalPresentationStyle = .fullScreen
+        self.present(newScreen, animated: true, completion: nil)
+    }
 
     func handleSuccessfullyVoted(dictionary:[String: Any]) {
         let timePostSubmittedAsString = String(dictionary["timePostSubmitted"] as! CLongLong)
@@ -535,9 +605,40 @@ extension ViewController {
         let alert = resp as! UIAlertController
         
         if ((alert.textFields![0].text) != "" && alert.textFields![1].text != "") {
-            alert.actions[1].isEnabled = true
+            if (alert.title == "Enter your username and password") {
+                alert.actions[1].isEnabled = true
+            } else {
+                alert.actions[0].isEnabled = true
+            }
         } else {
-            alert.actions[1].isEnabled = false
+            if (alert.title == "Enter your username and password") {
+                alert.actions[1].isEnabled = true
+            } else {
+                alert.actions[0].isEnabled = true
+            }
         }
     }
+}
+
+extension UIViewController {
+
+    func showToast(message : String, font: UIFont) {
+
+        let toastLabel = UILabel(frame: CGRect(x: self.view.frame.size.width/2 - 75, y: self.view.frame.size.height-100, width: 150, height: 35))
+        toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+        toastLabel.textColor = UIColor.white
+        toastLabel.font = font
+        toastLabel.textAlignment = .center;
+        toastLabel.text = message
+        toastLabel.alpha = 1.0
+        toastLabel.layer.cornerRadius = 10;
+        toastLabel.clipsToBounds  =  true
+        self.view.addSubview(toastLabel)
+        UIView.animate(withDuration: 3.0, delay: 0.1, options: .curveEaseOut, animations: {
+             toastLabel.alpha = 0.0
+        }, completion: {(isCompleted) in
+            toastLabel.removeFromSuperview()
+        })
+    }
+    
 }

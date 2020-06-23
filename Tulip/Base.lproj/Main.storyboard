@@ -125,6 +125,17 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="1004"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pf7-Lb-jXp">
+                                                    <rect key="frame" x="362.5" y="8" width="43.5" height="15"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="43.5" id="UdR-uS-GTy"/>
+                                                        <constraint firstAttribute="height" constant="15" id="u7F-Fr-Mty"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Button" image="three_dots"/>
+                                                    <connections>
+                                                        <action selector="menuAction:" destination="EX0-CD-8gj" eventType="touchUpInside" id="XJE-XT-yhL"/>
+                                                    </connections>
+                                                </button>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mage, 25" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hOz-0n-89Z">
                                                     <rect key="frame" x="28" y="11" width="61" height="15"/>
                                                     <constraints>
@@ -321,6 +332,28 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bVi-F7-5TS" customClass="CustomButton" customModule="Tulip" customModuleProvider="target">
+                                                    <rect key="frame" x="300" y="23" width="100" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="KnM-ZS-uJh"/>
+                                                        <constraint firstAttribute="width" constant="100" id="Xzy-jt-vaH"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Report Post"/>
+                                                    <connections>
+                                                        <action selector="reportPostAction:" destination="EX0-CD-8gj" eventType="touchUpInside" id="j21-kt-4EG"/>
+                                                    </connections>
+                                                </button>
+                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OyU-cP-k5y" customClass="CustomButton" customModule="Tulip" customModuleProvider="target">
+                                                    <rect key="frame" x="300" y="53" width="100" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="100" id="9hq-X0-Usz"/>
+                                                        <constraint firstAttribute="height" constant="30" id="XVS-kc-fGQ"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Block User"/>
+                                                    <connections>
+                                                        <action selector="blockUserAction:" destination="EX0-CD-8gj" eventType="touchUpInside" id="kez-ay-ksU"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="U8D-dm-t3u" firstAttribute="top" secondItem="czW-g8-XDO" secondAttribute="bottom" priority="999" constant="8" id="3Zi-uw-xU4"/>
@@ -329,12 +362,17 @@
                                                 <constraint firstAttribute="trailingMargin" secondItem="JdF-aK-Ax7" secondAttribute="trailing" constant="16" id="BMG-P7-9Hf"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="HPW-3e-Sdn" secondAttribute="bottom" constant="8" id="FNi-PD-PRm"/>
                                                 <constraint firstItem="JdF-aK-Ax7" firstAttribute="top" secondItem="czW-g8-XDO" secondAttribute="bottom" priority="999" constant="8" id="G7G-De-qwU"/>
+                                                <constraint firstItem="bVi-F7-5TS" firstAttribute="top" secondItem="pf7-Lb-jXp" secondAttribute="bottom" id="KXr-c6-aiU"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="czW-g8-XDO" secondAttribute="trailing" constant="8" id="L4w-0E-Baz"/>
                                                 <constraint firstItem="nqp-tF-8TA" firstAttribute="top" secondItem="hOz-0n-89Z" secondAttribute="bottom" constant="4" id="OVW-1k-8ka"/>
                                                 <constraint firstItem="nqp-tF-8TA" firstAttribute="leading" secondItem="vLs-B6-IP9" secondAttribute="leadingMargin" constant="8" id="PfH-eo-u1U"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="tyo-ND-8R2" secondAttribute="trailing" constant="8" id="Pxm-YY-cPe"/>
                                                 <constraint firstItem="czW-g8-XDO" firstAttribute="leading" secondItem="vLs-B6-IP9" secondAttribute="leadingMargin" constant="8" id="UEj-i5-wB3"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="nqp-tF-8TA" secondAttribute="trailing" constant="8" id="Zsg-Nc-daK"/>
+                                                <constraint firstAttribute="trailing" secondItem="OyU-cP-k5y" secondAttribute="trailing" constant="14" id="bVi-zL-5kN"/>
+                                                <constraint firstAttribute="trailing" secondItem="pf7-Lb-jXp" secondAttribute="trailing" constant="8" id="dda-zY-lRa"/>
+                                                <constraint firstItem="pf7-Lb-jXp" firstAttribute="top" secondItem="vLs-B6-IP9" secondAttribute="top" constant="8" id="e43-IM-YlF"/>
+                                                <constraint firstAttribute="trailing" secondItem="bVi-F7-5TS" secondAttribute="trailing" constant="14" id="gYt-cY-ZjZ"/>
                                                 <constraint firstItem="tyo-ND-8R2" firstAttribute="leading" secondItem="vLs-B6-IP9" secondAttribute="leadingMargin" constant="8" id="h2B-gu-lCy"/>
                                                 <constraint firstItem="HPW-3e-Sdn" firstAttribute="top" secondItem="U8D-dm-t3u" secondAttribute="bottom" constant="8" id="iSe-pd-Czj"/>
                                                 <constraint firstItem="tyo-ND-8R2" firstAttribute="top" secondItem="czW-g8-XDO" secondAttribute="bottom" priority="999" constant="8" id="joY-ak-Zug"/>
@@ -344,11 +382,13 @@
                                                 <constraint firstItem="hOz-0n-89Z" firstAttribute="leading" secondItem="vLs-B6-IP9" secondAttribute="leadingMargin" constant="8" id="uUD-Ue-oRh"/>
                                                 <constraint firstItem="HPW-3e-Sdn" firstAttribute="leading" secondItem="vLs-B6-IP9" secondAttribute="leadingMargin" constant="8" id="uc7-5Z-Aa0"/>
                                                 <constraint firstItem="hOz-0n-89Z" firstAttribute="top" secondItem="vLs-B6-IP9" secondAttribute="topMargin" id="vwS-MA-1Ku"/>
+                                                <constraint firstItem="OyU-cP-k5y" firstAttribute="top" secondItem="bVi-F7-5TS" secondAttribute="bottom" id="w1q-ps-dKA"/>
                                                 <constraint firstItem="JdF-aK-Ax7" firstAttribute="leading" secondItem="vLs-B6-IP9" secondAttribute="leadingMargin" constant="8" id="w4y-QU-bch"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="ageGenderLabel" destination="hOz-0n-89Z" id="ifu-xO-OqD"/>
+                                            <outlet property="blockUserButton" destination="OyU-cP-k5y" id="Uz6-Jh-YKc"/>
                                             <outlet property="cellMessage" destination="czW-g8-XDO" id="oE6-4c-hK8"/>
                                             <outlet property="cellMessageHeightConstraint" destination="hh0-1V-mfA" id="nED-AF-j27"/>
                                             <outlet property="cellTitle" destination="nqp-tF-8TA" id="3Hg-5g-Okw"/>
@@ -357,6 +397,8 @@
                                             <outlet property="cpb3" destination="I8s-ZQ-d7T" id="1Vg-3o-9Dc"/>
                                             <outlet property="cpb4" destination="5rG-Bt-9H7" id="HW5-0Z-bDW"/>
                                             <outlet property="cpb5" destination="FbR-zu-dTH" id="9Qe-hm-yia"/>
+                                            <outlet property="menuButton" destination="pf7-Lb-jXp" id="3bR-hn-saH"/>
+                                            <outlet property="reportPostButton" destination="bVi-F7-5TS" id="Fqq-qK-9yC"/>
                                             <outlet property="totalVotesLabel" destination="HPW-3e-Sdn" id="6oV-p5-cN3"/>
                                             <outlet property="votingOption1" destination="oIg-Cb-wWG" id="HZS-cg-gR2"/>
                                             <outlet property="votingOption2" destination="frr-P7-STH" id="a2S-hf-Whx"/>
@@ -1320,6 +1362,9 @@
                                                             <state key="normal" title="Button">
                                                                 <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </state>
+                                                            <connections>
+                                                                <action selector="adminProfileVO1Clicked:" destination="d7g-LI-dFS" eventType="touchUpInside" id="475-VX-4Fd"/>
+                                                            </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="odP-zs-WcZ">
                                                             <rect key="frame" x="0.0" y="43" width="358" height="35"/>
@@ -1546,5 +1591,6 @@
         <image name="plus_icon_green" width="1024" height="1024"/>
         <image name="profile_green" width="720" height="720"/>
         <image name="settings" width="512" height="512"/>
+        <image name="three_dots" width="820" height="283"/>
     </resources>
 </document>
